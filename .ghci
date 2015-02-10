@@ -1,0 +1,4 @@
+-- -*- mode:haskell;coding:utf-8-unix; -*-
+
+:set +s
+:set -isrc

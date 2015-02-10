@@ -1,0 +1,11 @@
+# emacs
+*~
+
+# Haskell, cabal
+*.o
+*.hi
+dist
+cabal-dev
+.cabal-sandbox/
+cabal.sandbox.config
+cabal.config
