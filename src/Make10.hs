@@ -56,19 +56,20 @@ isNull x  = Right x
 select :: forall c. [c] -> [(c, [c])]
 {-
 select []       = []
---select (x:xs)   = (x,xs) : map (\ (y,ys) -> (y,x:ys)) (select xs)
+-- select (x:xs)   = (x,xs) : map (\ (y,ys) -> (y,x:ys)) (select xs)
 select (x:xs)   = (x,xs) : map (second ((:) x))       (select xs)
 -}
-select =  loop $ (snd &&& fst >>> app) &&&
-          ((<<< isNull)
-           <<< (const [] |||)
-           <<< (uncurry (:) <<<)
-           <<< (<<< (head &&& tail))
-           <<< (id &&&)
-           <<< (uncurry map <<<)
-           <<< ((second <<< (:) <<< fst) &&&)
-           <<< (<<< snd)
-           <<< snd)
+select =
+  loop $ (snd &&& fst >>> app) &&&
+  ((<<< isNull)
+   <<< (const [] |||)
+   <<< (uncurry (:) <<<)
+   <<< (<<< (head &&& tail))
+   <<< (id &&&)
+   <<< (uncurry map <<<)
+   <<< ((second <<< (:) <<< fst) &&&)
+   <<< (<<< snd)
+   <<< snd)
 -- -----------------------------------------------------------------------------
 -- | combinations
 --
@@ -80,40 +81,41 @@ select =  loop $ (snd &&& fst >>> app) &&&
 --
 -- >>> combinations 2 [0,1,2]
 -- [[0,1],[0,2],[1,2]]
-combinations :: (Num a, Eq a, Enum a) => a -> [a1] -> [[a1]]
-combinations _ []     = []
-combinations 1 x      = map (:[]) x
-combinations n (x:xs) =
-  (map (x:) (combinations (pred n) xs)) ++ (combinations n xs)
-
-
-
-comb2 :: (Num a, Eq a, Enum a) => (a, [a1]) -> [[a1]]
-comb2 =  loop $ (snd &&& fst >>> app) &&&
-         ((<<< isSndNull)
-          <<< ((const []) |||)
-          <<< (<<< isOne)
-          <<< (((map (:[])) <<< snd) |||)
-
-          <<< (uncurry map <<<)
-          <<< ((uncurry (:) <<< head <<< snd) ***
-               (((pred <<< fst) &&& (tail <<< snd)) ***
-                (fst &&& (tail <<< snd)))
-               <<< (id &&& id) <<<)
-          <<< ((id &&& id) <<<)
-
-          <<< snd)
-  where
-    isSndNull (_, [])   = Left  []
-    isSndNull a@(_, _)  = Right a
-    isOne a@(1, _)      = Left  a
-    isOne a             = Right a
-
-
-
+combinations :: forall t. Integer -> [t] -> [[t]]
 {-
-          <<< ((((uncurry map <<<)
-                 <<< ((uncurry (:) <<< head <<< snd)
-                      &&& (<<< ((pred <<< fst) &&& (tail <<< snd))))))
-               &&& (<<< (fst &&& (tail <<< snd))))
+combinations _ []     = []
+combinations 0 _      = []
+combinations 1 x      = map (: []) x
+combinations n (x:xs) = map (x:) (combinations (pred n) xs) ++ combinations n xs
 -}
+combinations =
+  curry $ loop $ (snd &&& fst >>> app) &&&
+  ((<<< isSndNull)
+   <<< (const [] |||)
+   <<< (<<< isFstZero)
+   <<< (const [] |||)
+   <<< (<<< isFstOne)
+   <<< ((map (: []) <<< snd) |||)
+   <<< (uncurry (++) <<<)
+   <<< uncurry (&&&)
+   <<< (((uncurry map <<<)
+         <<< (((:) <<< head <<< snd) &&&)
+         <<< (<<< ((pred <<< fst) &&& (tail <<< snd))))
+        &&& (<<< (fst &&& (tail <<< snd))))
+   <<< snd)
+  where
+    -- -------------------------------------------------------------------------
+    isSndNull        :: forall t1 t2.
+                        (t1, [t2])      -> Either (t1, [t2]) (t1, [t2])
+    isSndNull           a@(_, [])       =  Left  a
+    isSndNull           a               =  Right a
+    -- -------------------------------------------------------------------------
+    isFstZero        :: forall t1 t2. (Num t1, Eq t1) =>
+                        (t1, t2)        -> Either (t1, t2) (t1, t2)
+    isFstZero           a@(0, _)        =  Left  a
+    isFstZero           a               =  Right a
+    -- -------------------------------------------------------------------------
+    isFstOne         :: forall t1 t2. (Num t1, Eq t1) =>
+                        (t1, t2)        -> Either (t1, t2) (t1, t2)
+    isFstOne            a@(1, _)        =  Left  a
+    isFstOne            a               =  Right a

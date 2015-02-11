@@ -4,6 +4,8 @@
 # Haskell, cabal
 *.o
 *.hi
+*.tix
+*.mix
 dist
 cabal-dev
 .cabal-sandbox/
