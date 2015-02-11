@@ -39,10 +39,6 @@ import Make10.Cell
 
 -- =============================================================================
 -- -----------------------------------------------------------------------------
-isNull :: [a] -> Either [a] [a]
-isNull [] = Left  []
-isNull x  = Right x
--- -----------------------------------------------------------------------------
 -- | select
 --
 -- >>> select []
@@ -53,12 +49,20 @@ isNull x  = Right x
 --
 -- >>> select [0,1,2]
 -- [(0,[1,2]),(1,[0,2]),(2,[0,1])]
+--
 select :: forall c. [c] -> [(c, [c])]
-{-
+{- 0.0 -- ----------------------------------------------------------------------
+-- UNUSED
 select []       = []
--- select (x:xs)   = (x,xs) : map (\ (y,ys) -> (y,x:ys)) (select xs)
+select (x:xs)   = (x,xs) : map (\ (y,ys) -> (y,x:ys)) (select xs)
+-- -}
+{- 0.1 -- ----------------------------------------------------------------------
+-- UNUSED
+select []       = []
 select (x:xs)   = (x,xs) : map (second ((:) x))       (select xs)
--}
+-- -}
+{- 0.2 -- ----------------------------------------------------------------------
+-- USED -}
 select =
   loop $ (snd &&& fst >>> app) &&&
   ((<<< isNull)
@@ -70,6 +74,13 @@ select =
    <<< ((second <<< (:) <<< fst) &&&)
    <<< (<<< snd)
    <<< snd)
+  where
+    -- -------------------------------------------------------------------------
+    isNull :: [a] -> Either [a] [a]
+    isNull [] = Left  []
+    isNull x  = Right x
+-- -}
+-- =============================================================================
 -- -----------------------------------------------------------------------------
 -- | combinations
 --
@@ -81,13 +92,17 @@ select =
 --
 -- >>> combinations 2 [0,1,2]
 -- [[0,1],[0,2],[1,2]]
+    --
 combinations :: forall t. Integer -> [t] -> [[t]]
-{-
+{- 0.0 -- ----------------------------------------------------------------------
+-- UNUSED
 combinations _ []     = []
 combinations 0 _      = []
 combinations 1 x      = map (: []) x
 combinations n (x:xs) = map (x:) (combinations (pred n) xs) ++ combinations n xs
--}
+-- -}
+{- 0.1 -- ----------------------------------------------------------------------
+-- UNUSED
 combinations =
   curry $ loop $ (snd &&& fst >>> app) &&&
   ((<<< isSndNull)
@@ -119,3 +134,21 @@ combinations =
                         (t1, t2)        -> Either (t1, t2) (t1, t2)
     isFstOne            a@(1, _)        =  Left  a
     isFstOne            a               =  Right a
+-- -}
+{- 0.2 -- ----------------------------------------------------------------------
+-- USED -}
+combinations _ [] = []
+combinations 0 _  = []
+combinations 1 x  = map (: []) x
+combinations n x  = comb (n, x)
+  where
+    comb =
+      loop $ (snd &&& fst >>> app) &&&
+      ((uncurry (++) <<<)
+       <<< uncurry (&&&)
+       <<< (((uncurry map <<<)
+             <<< (((:) <<< head <<< snd) &&&)
+             <<< (<<< ((pred <<< fst) &&& (tail <<< snd))))
+            &&& (<<< (fst &&& (tail <<< snd))))
+       <<< const (uncurry combinations))
+-- -}
