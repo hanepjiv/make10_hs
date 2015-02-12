@@ -17,6 +17,7 @@ make10, 10-puzzle
 module Make10.Operator ( Operator(..)
                        , invert
                        , swap
+                       , isEnableSwap
                        , priority
                        , function
                        ) where
@@ -55,33 +56,38 @@ instance QuickCheck.Arbitrary Operator where
 -- -----------------------------------------------------------------------------
 -- | invert
 --
-invert :: Operator -> Operator
-invert ADD      = SUB
-invert SUB      = ADD
-invert RSUB     = undefined
-invert MUL      = DIV
-invert DIV      = MUL
-invert RDIV     = undefined
+invert :: Operator      -> Operator
+invert ADD              =  SUB
+invert SUB              =  ADD
+invert RSUB             =  undefined
+invert MUL              =  DIV
+invert DIV              =  MUL
+invert RDIV             =  undefined
 -- -----------------------------------------------------------------------------
 -- | swap
 --
-swap :: Operator -> Operator
-swap ADD        = ADD
-swap SUB        = RSUB
-swap RSUB       = SUB
-swap MUL        = MUL
-swap DIV        = RDIV
-swap RDIV       = DIV
+swap :: Operator        -> Operator
+swap ADD                =  ADD
+swap SUB                =  RSUB
+swap RSUB               =  SUB
+swap MUL                =  MUL
+swap DIV                =  RDIV
+swap RDIV               =  DIV
+-- -----------------------------------------------------------------------------
+-- | isEnableSwap
+--
+isEnableSwap :: Operator -> Bool
+isEnableSwap op = op == swap op
 -- -----------------------------------------------------------------------------
 -- | priority
 --
-priority :: Operator -> Int
-priority ADD    = minBound :: Int
-priority SUB    = minBound :: Int
-priority RSUB   = minBound :: Int
-priority MUL    = maxBound :: Int
-priority DIV    = maxBound :: Int
-priority RDIV   = maxBound :: Int
+priority :: Operator    -> Int
+priority ADD            =  minBound :: Int
+priority SUB            =  minBound :: Int
+priority RSUB           =  minBound :: Int
+priority MUL            =  maxBound :: Int
+priority DIV            =  maxBound :: Int
+priority RDIV           =  maxBound :: Int
 -- -----------------------------------------------------------------------------
 -- | function
 --
@@ -96,10 +102,11 @@ priority RDIV   = maxBound :: Int
 --
 -- >>> function DIV (1 % 1) 2
 -- 1 % 2
+--
 function :: (Fractional a) => Operator -> a -> a -> a
-function ADD    = (+)
-function RSUB   = flip (-)
-function SUB    = (-)
-function MUL    = (*)
-function DIV    = (/)
-function RDIV   = flip (/)
+function ADD            =  (+)
+function RSUB           =  flip (-)
+function SUB            =  (-)
+function MUL            =  (*)
+function DIV            =  (/)
+function RDIV           =  flip (/)
