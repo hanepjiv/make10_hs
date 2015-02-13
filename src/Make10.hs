@@ -25,12 +25,18 @@ module Make10 ( Operator(..)
                 -- -------------------------------------------------------------
               , select
               , combinations
+                -- -------------------------------------------------------------
+              , makeN
+              , make10
               ) where
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 import Prelude
 
+import Control.Applicative
 import Control.Arrow
+import Control.Monad ( replicateM
+                     )
 
 import Make10.Operator
 import Make10.Cell
@@ -170,3 +176,95 @@ combinations n x  = comb (n, x)
             &&& (<<< (fst &&& (tail <<< snd))))
        <<< const (uncurry combinations))
 -- -}
+-- =============================================================================
+-- -----------------------------------------------------------------------------
+-- | makeTripleA
+--
+makeTripleA :: forall a.
+               (Show a, Ord a, Fractional a) =>
+               a -> a -> a -> a -> Operator -> Operator -> Operator -> Cell a
+makeTripleA n0 n1 n2 n3 o0 o1 o2 =
+  optimize $
+  Triple o2 (Triple o1 (Triple o0 (Atom n3) (Atom n2)) (Atom n1)) (Atom n0)
+-- -----------------------------------------------------------------------------
+-- | makeTripleB
+--
+makeTripleB :: forall a.
+               (Show a, Ord a, Fractional a) =>
+               a -> a -> a -> a -> Operator -> Operator -> Operator -> Cell a
+makeTripleB n0 n1 n2 n3 o0 o1 o2 =
+  optimize $
+  Triple o2 (Triple o1 (Atom n3) (Atom n2)) (Triple o0 (Atom n1) (Atom n0))
+-- -----------------------------------------------------------------------------
+-- | patternA
+--
+patternA :: [[Integer]]
+patternA =  [ [0, 1, 2, 3]
+            , [0, 2, 1, 3]
+            , [0, 3, 1, 2]
+            , [1, 0, 2, 3]
+            , [1, 2, 0, 3]
+            , [1, 3, 0, 2]
+            , [2, 0, 1, 3]
+            , [2, 1, 0, 3]
+            , [2, 3, 0, 1]
+            , [3, 0, 1, 2]
+            , [3, 1, 0, 2]
+            , [3, 2, 0, 1]
+            ]
+-- -----------------------------------------------------------------------------
+-- | patternB
+--
+patternB :: [[Integer]]
+patternB  = [ [0, 1, 2, 3]
+            , [0, 2, 1, 3]
+            , [0, 3, 1, 2]
+            ]
+-- -----------------------------------------------------------------------------
+-- | makeTriple
+--
+makeTriple :: forall a.
+              (Show a, Ord a, Fractional a) =>
+              [a] -> [Operator] -> [Cell a]
+makeTriple ns os =
+  filter (not . hasZeroDiv)
+  $ map (gen makeTripleA ns os) patternA ++ map (gen makeTripleB ns os) patternB
+  where
+    gen make_ n_ o_ i_ = make_
+                         (n_ !! fromInteger (head i_))
+                         (n_ !! fromInteger (i_ !! 1))
+                         (n_ !! fromInteger (i_ !! 2))
+                         (n_ !! fromInteger (i_ !! 3))
+                         (head o_)
+                         (o_ !! 1)
+                         (o_ !! 2)
+-- -----------------------------------------------------------------------------
+-- | makeN
+--
+makeN :: forall a.
+          (Show a, Ord a, Fractional a) =>
+          a -> [a] -> [Cell a]
+makeN n a_in =
+  unseen [t | t <- concatMap (makeTriple a_in) $ replicateM (pred (length a_in)) allOp
+            , isRightTrue $ (== n) <$> eval t
+            ]
+  where
+    -- -------------------------------------------------------------------------
+    isRightTrue (Right True)        = True
+    isRightTrue _                   = False
+    -- -------------------------------------------------------------------------
+    unseen x_ = unseen_ x_ [] []
+      where
+        unseen_   []     _    _       = []
+        unseen_ a@(_:[]) []   []      = a
+        unseen_   (x:xs) seen same
+          | x        `elem` seen      = unseen_ xs seen same
+          | expand x `elem` same      = unseen_ xs seen same
+          | otherwise                 = x : unseen_ xs (x:seen) (expand x:same)
+-- -----------------------------------------------------------------------------
+-- | make10
+--
+make10 :: forall a.
+          (Show a, Ord a, Fractional a) =>
+          [a] -> [Cell a]
+make10 = makeN 10

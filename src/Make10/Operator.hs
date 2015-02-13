@@ -15,6 +15,7 @@ Portability : portable
 make10, 10-puzzle
 -}
 module Make10.Operator ( Operator(..)
+                       , allOp
                        , invert
                        , swap
                        , isEnableSwap
@@ -46,13 +47,26 @@ data Operator   = ADD
                 | MUL
                 | DIV
                 | RDIV
-                deriving (Bounded, Eq, Ord, Enum, Show)
+                deriving (Bounded, Eq, Ord, Enum)
+-- -----------------------------------------------------------------------------
+instance Show Operator where
+    show ADD       = " + "
+    show SUB       = " - "
+    show RSUB      = " -< "
+    show MUL       = " * "
+    show DIV       = " / "
+    show RDIV      = " /< "
 -- -----------------------------------------------------------------------------
 instance QuickCheck.Arbitrary Operator where
   arbitrary =  gen <$> QuickCheck.arbitrary
     where
       gen :: Int -> Operator
       gen i = toEnum $ mod (abs i) (fromEnum (maxBound :: Operator) + 1)
+-- -----------------------------------------------------------------------------
+-- | allOp
+--
+allOp :: [Operator]
+allOp =  [minBound .. maxBound]
 -- -----------------------------------------------------------------------------
 -- | invert
 --
