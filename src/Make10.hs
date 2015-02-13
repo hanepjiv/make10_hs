@@ -250,17 +250,17 @@ makeN n a_in =
             ]
   where
     -- -------------------------------------------------------------------------
-    isRightTrue (Right True)        = True
-    isRightTrue _                   = False
+    isRightTrue (Right True)       = True
+    isRightTrue _                  = False
     -- -------------------------------------------------------------------------
     unseen x_ = unseen_ x_ [] []
       where
-        unseen_   []     _    _       = []
-        unseen_ a@(_:[]) []   []      = a
+        unseen_   []     _    _    = []
+        unseen_ a@[_]    []   []   = a
         unseen_   (x:xs) seen same
-          | x        `elem` seen      = unseen_ xs seen same
-          | expand x `elem` same      = unseen_ xs seen same
-          | otherwise                 = x : unseen_ xs (x:seen) (expand x:same)
+          | x        `elem` seen   = unseen_ xs seen same
+          | expand x `elem` same   = unseen_ xs seen same
+          | otherwise              = x : unseen_ xs (x:seen) (expand x:same)
 -- -----------------------------------------------------------------------------
 -- | make10
 --

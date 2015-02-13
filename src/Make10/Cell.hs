@@ -26,7 +26,6 @@ module Make10.Cell ( Cell(..)
 import Prelude
 
 import Data.List
-import Data.Ratio
 
 import Control.Applicative ( (<$>)
                            , (<*>)
