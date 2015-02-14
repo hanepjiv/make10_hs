@@ -112,8 +112,20 @@ setRightOp    _              a                =  a
 -- >>> apply Op.ADD (Atom (1 % 1)) (Atom 2)
 -- Right (3 % 1)
 --
+-- >>> apply Op.SUB (Atom (1 % 1)) (Atom 2)
+-- Right ((-1) % 1)
+--
+-- >>> apply Op.RSUB (Atom (1 % 1)) (Atom 2)
+-- Right (1 % 1)
+--
 -- >>> apply Op.MUL (Triple Op.ADD (Atom (1 % 1)) (Atom 2)) (Atom 2)
 -- Right (6 % 1)
+--
+-- >>> apply Op.DIV (Atom (1 % 1)) (Atom 2)
+-- Right (1 % 2)
+--
+-- >>> apply Op.RDIV (Atom (1 % 1)) (Atom 2)
+-- Right (2 % 1)
 --
 -- >>> :{
 --  apply Op.MUL
@@ -121,6 +133,14 @@ setRightOp    _              a                =  a
 --        (Triple Op.DIV (Atom 10) (Atom 2))
 -- :}
 -- Right (15 % 1)
+--
+-- >>> :{
+--  apply Op.ADD (Atom $ 9 % 1)
+--               (Triple Op.RDIV (Triple Op.MUL (Atom $ 3 % 1)
+--                                              (Atom $ 9 % 1))
+--                               (Atom $ 3 % 1))
+-- :}
+-- Right (82 % 9)
 --
 apply :: forall a.
          (Show a, Fractional a, Eq a) =>
@@ -240,6 +260,14 @@ rightUnsafe _                                =  undefined
 --
 -- Triple MUL (Atom (1 % 1)) (Atom (2 % 1))
 --
+-- >>> :{
+--  optimize $ Triple Op.ADD (Atom (9 % 1))
+--                           (Triple Op.RDIV (Triple Op.RDIV (Atom (3 % 1))
+--                                                           (Atom (9 % 1)))
+--                                           (Atom (3 % 1)))
+-- :}
+-- 9 % 1 + (3 % 1 * (3 % 1 / 9 % 1))
+--
 optimize :: forall a.
             (Show a, Ord a, Fractional a) =>
             Cell a -> Cell a
@@ -272,13 +300,13 @@ optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
 
     opt x_                                       = x_
     -- -------------------------------------------------------------------------
-    opt_0 (Triple op_ l_ r_@(Triple rop_ _ _))   =
-      Triple op_ l_ $ opt $ setOp (Op.invert rop_) $ swapUnsafe r_
+    opt_0 (Triple op_ l_ r_@(Triple {}))         =
+      optimize $ Triple (Op.invert op_) l_ $ swapUnsafe r_
     opt_0 x_                                     = x_
     -- -------------------------------------------------------------------------
     opt_1 x_@(Triple _ (Triple rop_ _ _) _)      =
       optimize $ setRightOp (Op.invert rop_) $ rightUnsafe x_
-    opt_1 x_                                         = x_
+    opt_1 x_                                     = x_
     -- -------------------------------------------------------------------------
     opt_2 x_@(Triple op_ l_ (Triple rop_ rl_ rr_))
       | rank l_ > rank rl_ = Triple op_ rl_ $ opt $ Triple rop_ l_ rr_

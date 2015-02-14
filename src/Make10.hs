@@ -35,8 +35,8 @@ import Prelude
 
 import Control.Applicative
 import Control.Arrow
-import Control.Monad ( replicateM
-                     )
+import Control.Monad    ( replicateM
+                        )
 
 import Make10.Operator
 import Make10.Cell
@@ -184,7 +184,6 @@ makeTripleA :: forall a.
                (Show a, Ord a, Fractional a) =>
                a -> a -> a -> a -> Operator -> Operator -> Operator -> Cell a
 makeTripleA n0 n1 n2 n3 o0 o1 o2 =
-  optimize $
   Triple o2 (Triple o1 (Triple o0 (Atom n3) (Atom n2)) (Atom n1)) (Atom n0)
 -- -----------------------------------------------------------------------------
 -- | makeTripleB
@@ -193,7 +192,6 @@ makeTripleB :: forall a.
                (Show a, Ord a, Fractional a) =>
                a -> a -> a -> a -> Operator -> Operator -> Operator -> Cell a
 makeTripleB n0 n1 n2 n3 o0 o1 o2 =
-  optimize $
   Triple o2 (Triple o1 (Atom n3) (Atom n2)) (Triple o0 (Atom n1) (Atom n0))
 -- -----------------------------------------------------------------------------
 -- | patternA
@@ -242,10 +240,10 @@ makeTriple ns os =
 -- | makeN
 --
 makeN :: forall a.
-          (Show a, Ord a, Fractional a) =>
-          a -> [a] -> [Cell a]
+         (Show a, Ord a, Fractional a) =>
+         a -> [a] -> [Cell a]
 makeN n a_in =
-  unseen [t | t <- concatMap (makeTriple a_in) $ replicateM (pred (length a_in)) allOp
+  unseen [optimize $ t | t <- concatMap (makeTriple a_in) $ replicateM (pred (length a_in)) allOp
             , isRightTrue $ (== n) <$> eval t
             ]
   where
@@ -253,14 +251,13 @@ makeN n a_in =
     isRightTrue (Right True)       = True
     isRightTrue _                  = False
     -- -------------------------------------------------------------------------
-    unseen x_ = unseen_ x_ [] []
+    unseen x_ = unseen_ x_ []
       where
-        unseen_   []     _    _    = []
-        unseen_ a@[_]    []   []   = a
-        unseen_   (x:xs) seen same
-          | x        `elem` seen   = unseen_ xs seen same
-          | expand x `elem` same   = unseen_ xs seen same
-          | otherwise              = x : unseen_ xs (x:seen) (expand x:same)
+        unseen_   []     _         = []
+        unseen_ a@[_]    []        = a
+        unseen_   (x:xs) seen
+          | expand x `elem` seen   = unseen_ xs seen
+          | otherwise              = x : unseen_ xs (expand x:seen)
 -- -----------------------------------------------------------------------------
 -- | make10
 --

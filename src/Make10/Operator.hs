@@ -111,11 +111,17 @@ priority RDIV           =  maxBound :: Int
 -- >>> function SUB (1 % 1) 2
 -- (-1) % 1
 --
+-- >>> function RSUB (1 % 1) 2
+-- 1 % 1
+--
 -- >>> function MUL (1 % 1) 2
 -- 2 % 1
 --
 -- >>> function DIV (1 % 1) 2
 -- 1 % 2
+--
+-- >>> function RDIV (1 % 1) 2
+-- 2 % 1
 --
 function :: (Fractional a) => Operator -> a -> a -> a
 function ADD            =  (+)
