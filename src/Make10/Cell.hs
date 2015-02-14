@@ -180,7 +180,7 @@ hasZeroDiv _                         = False
 rank :: (Fractional a) =>
         Cell a          -> a
 rank    (Atom x)        =  x
-rank    (Triple _ l r)  =  10 * (rank l + rank r)
+rank    (Triple _ l r)  =  10 + (rank l + rank r)
 -- -----------------------------------------------------------------------------
 -- | swap
 --
@@ -317,7 +317,6 @@ optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
       | rank l_ > rank r_                        = opt $ swapUnsafe x_
       | otherwise                                = x_
     opt_3 x_                                     = x_
-
 -- -----------------------------------------------------------------------------
 -- | expand
 --
