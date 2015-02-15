@@ -25,11 +25,6 @@ module Make10.Operator ( Operator(..)
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 import Prelude
-
-import Control.Applicative( (<$>)
-                          )
-
-import qualified Test.QuickCheck as QuickCheck
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 
@@ -56,12 +51,6 @@ instance Show Operator where
     show MUL       = " * "
     show DIV       = " / "
     show RDIV      = " /< "
--- -----------------------------------------------------------------------------
-instance QuickCheck.Arbitrary Operator where
-  arbitrary =  gen <$> QuickCheck.arbitrary
-    where
-      gen :: Int -> Operator
-      gen i = toEnum $ mod (abs i) (fromEnum (maxBound :: Operator) + 1)
 -- -----------------------------------------------------------------------------
 -- | allOp
 --
