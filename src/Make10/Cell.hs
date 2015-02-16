@@ -27,9 +27,9 @@ import Prelude
 
 import Data.List
 
-import Control.Applicative ( (<$>)
-                           , (<*>)
-                           )
+import Control.Applicative      ( (<$>)
+                                , (<*>)
+                                )
 
 import qualified Make10.Operator as Op
 -- =============================================================================
