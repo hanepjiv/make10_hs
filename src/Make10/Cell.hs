@@ -49,15 +49,11 @@ import qualified Make10.Operator as Op
 -- >>> Triple Op.ADD (Atom (1 % 1)) (Atom 2)
 -- 1 % 1 + 2 % 1
 --
--- Triple ADD (Atom (1 % 1)) (Atom (2 % 1))
---
 -- >>> :{
 --  Triple Op.ADD
 --  (Atom 1) (Triple Op.ADD (Atom $ 1 % 2) (Atom $ 2 % 3))
 -- :}
 -- 1 % 1 + (1 % 2 + 2 % 3)
---
--- Triple ADD (Atom (1 % 1)) (Triple ADD (Atom (1 % 2)) (Atom (2 % 3)))
 --
 data Cell a where
   { Atom        :: a -> Cell a
@@ -75,12 +71,8 @@ instance (Show a) => Show (Cell a) where
 -- >>> setOp Op.ADD (Atom (1 % 1))
 -- 1 % 1
 --
--- Atom (1 % 1)
---
 -- >>> setOp Op.MUL (Triple Op.ADD (Atom (1 % 1)) (Atom (2 % 1)))
 -- 1 % 1 * 2 % 1
---
--- Triple MUL (Atom (1 % 1)) (Atom (2 % 1))
 --
 setOp :: Op.Operator      -> Cell a               -> Cell a
 setOp    op                  (Triple _ l r)       =  Triple op l r
@@ -91,8 +83,6 @@ setOp    _                   a                    =  a
 -- >>> setRightOp Op.ADD (Atom (1 % 1))
 -- 1 % 1
 --
--- Atom (1 % 1)
---
 -- >>> :{
 --  setRightOp Op.MUL
 --             (Triple Op.ADD
@@ -100,8 +90,6 @@ setOp    _                   a                    =  a
 --                     (Triple Op.ADD (Atom (1 % 1)) (Atom (2 % 1))))
 -- :}
 -- 1 % 1 + (1 % 1 * 2 % 1)
---
--- Triple ADD (Atom (1 % 1)) (Triple MUL (Atom (1 % 1)) (Atom (2 % 1)))
 --
 setRightOp :: Op.Operator -> Cell a           -> Cell a
 setRightOp    rop            (Triple op l r)  = Triple op l $ setOp rop r
@@ -190,8 +178,6 @@ rank    (Triple _ l r)  =  10 + (rank l + rank r)
 -- >>> swap $ Triple Op.ADD (Atom (1 % 1)) (Atom (2 % 1))
 -- 2 % 1 + 1 % 1
 --
--- Triple ADD (Atom (2 % 1)) (Atom (1 % 1))
---
 swap ::         Cell a          -> Cell a
 swap            (Triple op l r) =  Triple (Op.swap op) r l
 swap            _               =  undefined
@@ -203,8 +189,6 @@ swap            _               =  undefined
 --
 -- >>> swapUnsafe $ Triple Op.ADD (Atom (1 % 1)) (Atom (2 % 1))
 -- 2 % 1 + 1 % 1
---
--- Triple ADD (Atom (2 % 1)) (Atom (1 % 1))
 --
 swapUnsafe ::   Cell a          -> Cell a
 swapUnsafe      (Triple op l r) =  Triple op r l
@@ -242,8 +226,6 @@ leftUnsafe    _                                 =  undefined
 -- :}
 -- 1 % 1 * (2 % 1 * 3 % 1)
 --
--- Triple MUL (Atom (1 % 1)) (Triple MUL (Atom (2 % 1)) (Atom (3 % 1)))
---
 rightUnsafe :: Cell a                        -> Cell a
 rightUnsafe (Triple op (Triple lop ll lr) r) =  Triple lop ll (Triple op lr r)
 rightUnsafe _                                =  undefined
@@ -253,12 +235,8 @@ rightUnsafe _                                =  undefined
 -- >>> optimize $ Triple Op.RSUB (Atom (1 % 1)) (Atom (2 % 1))
 -- 2 % 1 - 1 % 1
 --
--- Triple SUB (Atom (2 % 1)) (Atom (1 % 1))
---
 -- >>> optimize $ Triple Op.RDIV (Atom (1 % 1)) (Atom (2 % 1))
 -- 1 % 1 * 2 % 1
---
--- Triple MUL (Atom (1 % 1)) (Atom (2 % 1))
 --
 -- >>> :{
 --  optimize $ Triple Op.ADD (Atom (9 % 1))
@@ -275,48 +253,53 @@ optimize    x@(Atom {})         =  x
 optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
   where
     -- -------------------------------------------------------------------------
-    opt x_@(Triple Op.RSUB _ _)                  = opt $ swap x_
-    opt x_@(Triple Op.RDIV _ _)                  = opt $ swap x_
-
-    opt x_@(Triple Op.SUB _ (Triple Op.SUB _ _)) = opt_0 x_
-    opt x_@(Triple Op.DIV _ (Triple Op.DIV _ _)) = opt_0 x_
-
-    opt x_@(Triple Op.SUB (Triple Op.SUB _ _) _) = opt_1 x_
-    opt x_@(Triple Op.DIV (Triple Op.DIV _ _) _) = opt_1 x_
-
-    opt x_@(Triple Op.DIV _ r_)                  =
+    opt            x_@(Atom {})                      = x_
+    opt            x_@(Triple Op.ADD  _ _)           = opt_ADD $ opt_rankSwap x_
+    opt            x_@(Triple Op.SUB  _ _)           = opt_SUB x_
+    opt            x_@(Triple Op.RSUB _ _)           = opt $ swap x_
+    opt            x_@(Triple Op.MUL  _ _)           = opt_MUL $ opt_rankSwap x_
+    opt            x_@(Triple Op.DIV  _ _)           = opt_DIV x_
+    opt            x_@(Triple Op.RDIV _ _)           = opt $ swap x_
+    -- -------------------------------------------------------------------------
+    opt_rankSwap   x_@(Triple _ l_ r_)
+      | rank l_ > rank r_                            = opt $ swapUnsafe x_
+      | otherwise                                    = x_
+    opt_rankSwap   x_                                = x_
+    -- -------------------------------------------------------------------------
+    opt_ADD x_@(Triple Op.ADD (Triple Op.ADD _ _) _) = optimize $ rightUnsafe x_
+    opt_ADD x_@(Triple Op.ADD _ (Triple Op.ADD _ _)) = opt_change x_
+    opt_ADD x_                                       = x_
+    -- -------------------------------------------------------------------------
+    opt_SUB x_@(Triple Op.SUB (Triple Op.SUB _ _) _) = opt_rightSafe x_
+    opt_SUB x_@(Triple Op.SUB _ (Triple Op.SUB _ _)) = opt_invertSafe x_
+    opt_SUB x_                                       = x_
+    -- -------------------------------------------------------------------------
+    opt_MUL x_@(Triple Op.MUL (Triple Op.MUL _ _) _) = optimize $ rightUnsafe x_
+    opt_MUL x_@(Triple Op.MUL _ (Triple Op.MUL _ _)) = opt_change x_
+    opt_MUL x_                                       = x_
+    -- -------------------------------------------------------------------------
+    opt_DIV x_@(Triple Op.DIV (Triple Op.DIV _ _) _) = opt_rightSafe x_
+    opt_DIV x_@(Triple Op.DIV _ (Triple Op.DIV _ _)) = opt_invertSafe x_
+    opt_DIV x_@(Triple Op.DIV _ r_)                  =
       case eval r_ of
-        Right x -> if 1 == x then opt $ setOp Op.MUL x_ else x_
+        Right x -> if 1 == x
+                   then                                opt $ setOp Op.MUL x_
+                   else                                x_
         _       -> x_
-
-    opt x_@(Triple Op.ADD (Triple Op.ADD _ _) _) = optimize $ rightUnsafe x_
-    opt x_@(Triple Op.MUL (Triple Op.MUL _ _) _) = optimize $ rightUnsafe x_
-
-    opt x_@(Triple Op.ADD _ (Triple Op.ADD _ _)) = opt_2 x_
-    opt x_@(Triple Op.MUL _ (Triple Op.MUL _ _)) = opt_2 x_
-
-    opt x_@(Triple Op.ADD _ _)                   = opt_3 x_
-    opt x_@(Triple Op.MUL _ _)                   = opt_3 x_
-
-    opt x_                                       = x_
+    opt_DIV        x_                                = x_
     -- -------------------------------------------------------------------------
-    opt_0 (Triple op_ l_ r_@(Triple {}))         =
-      optimize $ Triple (Op.invert op_) l_ $ swapUnsafe r_
-    opt_0 x_                                     = x_
-    -- -------------------------------------------------------------------------
-    opt_1 x_@(Triple _ (Triple rop_ _ _) _)      =
+    opt_rightSafe  x_@(Triple _ (Triple rop_ _ _) _) =
       optimize $ setRightOp (Op.invert rop_) $ rightUnsafe x_
-    opt_1 x_                                     = x_
+    opt_rightSafe  x_                                = x_
     -- -------------------------------------------------------------------------
-    opt_2 x_@(Triple op_ l_ (Triple rop_ rl_ rr_))
+    opt_invertSafe    (Triple op_ l_ r_@(Triple {})) =
+      optimize $ Triple (Op.invert op_) l_ $ swapUnsafe r_
+    opt_invertSafe x_                                = x_
+    -- -------------------------------------------------------------------------
+    opt_change     x_@(Triple op_ l_ (Triple rop_ rl_ rr_))
       | rank l_ > rank rl_ = Triple op_ rl_ $ opt $ Triple rop_ l_ rr_
-      | otherwise                                = x_
-    opt_2 x_                                     = x_
-    -- -------------------------------------------------------------------------
-    opt_3 x_@(Triple _ l_ r_)
-      | rank l_ > rank r_                        = opt $ swapUnsafe x_
-      | otherwise                                = x_
-    opt_3 x_                                     = x_
+      | otherwise                                    = x_
+    opt_change     x_                                = x_
 -- -----------------------------------------------------------------------------
 -- | expand
 --
@@ -333,7 +316,9 @@ expand :: forall a. (Show a, Ord a, Fractional a) => Cell a -> [a]
 expand    x                             =  sort $ exp_ x
   where
     -- -------------------------------------------------------------------------
-    exp_    (Atom x_)                   =  [x_]
+    exp_    (Atom x_)
+      | x_ /= 0                         = [x_]
+      | otherwise                       = []
     exp_    (Triple Op.ADD  l_ r_)      =  exp_ l_ ++ exp_ r_
     exp_    (Triple Op.SUB  l_ r_)      =  exp_ l_ ++ ((* (-1)) <$> exp_ r_)
     exp_ x_@(Triple Op.RSUB _  _ )      =  exp_ $ optimize x_
@@ -341,4 +326,4 @@ expand    x                             =  sort $ exp_ x
     exp_    (Triple Op.DIV  l_ r_)      =  prd_ (/) l_ r_
     exp_ x_@(Triple Op.RDIV _  _ )      =  exp_ $ optimize x_
     -- -------------------------------------------------------------------------
-    prd_ f_ l_ r_ = [f_ x_ y_ | x_ <- exp_ l_, y_ <- exp_ r_]
+    prd_ f_ l_ r_ = filter (/= 0) [f_ x_ y_ | x_ <- exp_ l_, y_ <- exp_ r_]
