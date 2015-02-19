@@ -51,7 +51,7 @@ main = do
   result <- Make10.make10
             <$> map (% (1 :: Integer))
             <$> replicateM 4 ( do
-                                  putStr "<< "
+                                  putStr ">>> "
                                   hFlush stdout
                                   readLn
                              )
@@ -67,7 +67,7 @@ main = flip runKleisli () $
        (Kleisli $ const $ putStrLn "# input 4 numbers")
        >>> (Kleisli $ const $ Make10.make10 <$> map (% (1 :: Integer)) <$>
             replicateM 4 (flip runKleisli () $
-                          (Kleisli $ const $ putStr "<< ")
+                          (Kleisli $ const $ putStr ">>> ")
                           >>> (Kleisli $ const $ hFlush stdout)
                           >>> (Kleisli $ const readLn)
                          ))

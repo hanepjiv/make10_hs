@@ -25,13 +25,12 @@ module Make10.Cell ( Cell(..)
 -- -----------------------------------------------------------------------------
 import Prelude
 
-import Data.List
-
 import Control.Applicative      ( (<$>)
                                 , (<*>)
                                 )
 
 import qualified Make10.Operator as Op
+import qualified Make10.Expand as Exp
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 
@@ -55,10 +54,9 @@ import qualified Make10.Operator as Op
 -- :}
 -- 1 % 1 + (1 % 2 + 2 % 3)
 --
-data Cell a where
-  { Atom        :: a -> Cell a
-  ; Triple      :: !Op.Operator -> Cell a -> Cell a -> Cell a
-  } deriving (Eq)
+data Cell a where { Atom        :: a -> Cell a
+                  ; Triple      :: !Op.Operator -> Cell a -> Cell a -> Cell a
+                  } deriving (Eq)
 -- -----------------------------------------------------------------------------
 instance (Show a) => Show (Cell a) where
     showsPrec d (Atom x)        = showsPrec (succ d) x
@@ -236,7 +234,7 @@ rightUnsafe _                                =  undefined
 -- 2 % 1 - 1 % 1
 --
 -- >>> optimize $ Triple Op.RDIV (Atom (1 % 1)) (Atom (2 % 1))
--- 1 % 1 * 2 % 1
+-- 2 % 1 / 1 % 1
 --
 -- >>> :{
 --  optimize $ Triple Op.ADD (Atom (9 % 1))
@@ -280,12 +278,14 @@ optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
     -- -------------------------------------------------------------------------
     opt_DIV x_@(Triple Op.DIV (Triple Op.DIV _ _) _) = opt_rightSafe x_
     opt_DIV x_@(Triple Op.DIV _ (Triple Op.DIV _ _)) = opt_invertSafe x_
+{-
     opt_DIV x_@(Triple Op.DIV _ r_)                  =
       case eval r_ of
         Right x -> if 1 == x
                    then                                opt $ setOp Op.MUL x_
                    else                                x_
         _       -> x_
+-}
     opt_DIV        x_                                = x_
     -- -------------------------------------------------------------------------
     opt_rightSafe  x_@(Triple _ (Triple rop_ _ _) _) =
@@ -304,26 +304,25 @@ optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
 -- | expand
 --
 -- >>> expand $ (Atom $ 1 % 1)
--- [1 % 1]
+-- ExpandList [1 % 1]
 --
 -- >>> expand $ Triple Op.RSUB (Atom $ 1 % 1) (Atom $ 2 % 1)
--- [(-1) % 1,2 % 1]
+-- ExpandList [(-1) % 1,2 % 1]
 --
 -- >>> expand $ Triple Op.DIV (Atom $ 10 % 1) (Atom $ 10 % 1)
--- [1 % 1]
+-- ExpandTuple ([10 % 1],[10 % 1])
 --
-expand :: forall a. (Show a, Ord a, Fractional a) => Cell a -> [a]
-expand    x                             =  sort $ exp_ x
-  where
-    -- -------------------------------------------------------------------------
-    exp_    (Atom x_)
-      | x_ /= 0                         = [x_]
-      | otherwise                       = []
-    exp_    (Triple Op.ADD  l_ r_)      =  exp_ l_ ++ exp_ r_
-    exp_    (Triple Op.SUB  l_ r_)      =  exp_ l_ ++ ((* (-1)) <$> exp_ r_)
-    exp_ x_@(Triple Op.RSUB _  _ )      =  exp_ $ optimize x_
-    exp_    (Triple Op.MUL  l_ r_)      =  prd_ (*) l_ r_
-    exp_    (Triple Op.DIV  l_ r_)      =  prd_ (/) l_ r_
-    exp_ x_@(Triple Op.RDIV _  _ )      =  exp_ $ optimize x_
-    -- -------------------------------------------------------------------------
-    prd_ f_ l_ r_ = filter (/= 0) [f_ x_ y_ | x_ <- exp_ l_, y_ <- exp_ r_]
+expand :: forall a. (Ord a, Num a) => Cell a -> Exp.Expand a
+expand (Atom 0)                 =  Exp.ExpandList []
+expand (Atom x)                 =  Exp.ExpandList [x]
+expand (Triple op lhs rhs)      =  expandFunc op (expand lhs) (expand rhs)
+-- -----------------------------------------------------------------------------
+expandFunc :: forall a.
+                 (Ord a, Num a) =>
+                 Op.Operator -> Exp.Expand a -> Exp.Expand a -> Exp.Expand a
+expandFunc Op.ADD  =     Exp.add
+expandFunc Op.SUB  =     Exp.sub
+expandFunc Op.RSUB =     flip Exp.sub
+expandFunc Op.MUL  =     Exp.mul
+expandFunc Op.DIV  =     Exp.truediv
+expandFunc Op.RDIV =     flip Exp.truediv
