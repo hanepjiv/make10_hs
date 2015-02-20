@@ -23,8 +23,7 @@ module Make10 ( Operator(..)
               , optimize
               , expand
                 -- -------------------------------------------------------------
-              , makeN
-              , make10
+              , make_M_4
               ) where
 -- =============================================================================
 -- -----------------------------------------------------------------------------
@@ -33,6 +32,8 @@ import Prelude
 import Control.Applicative
 import Control.Monad    ( replicateM
                         )
+
+import qualified Data.Set as Set
 
 import Make10.Operator
 import Make10.Cell
@@ -44,20 +45,20 @@ import Make10.Cell
 
 -- =============================================================================
 -- -----------------------------------------------------------------------------
--- | makeTripleA
+-- | make_M_4_Triple_A
 --
-makeTripleA :: forall a.
+make_M_4_Triple_A :: forall a.
                (Show a, Ord a, Fractional a) =>
                a -> a -> a -> a -> Operator -> Operator -> Operator -> Cell a
-makeTripleA n0 n1 n2 n3 o0 o1 o2 =
+make_M_4_Triple_A n0 n1 n2 n3 o0 o1 o2 =
   Triple o2 (Triple o1 (Triple o0 (Atom n3) (Atom n2)) (Atom n1)) (Atom n0)
 -- -----------------------------------------------------------------------------
--- | makeTripleB
+-- | make_M_4_Triple_B
 --
-makeTripleB :: forall a.
+make_M_4_Triple_B :: forall a.
                (Show a, Ord a, Fractional a) =>
                a -> a -> a -> a -> Operator -> Operator -> Operator -> Cell a
-makeTripleB n0 n1 n2 n3 o0 o1 o2 =
+make_M_4_Triple_B n0 n1 n2 n3 o0 o1 o2 =
   Triple o2 (Triple o1 (Atom n3) (Atom n2)) (Triple o0 (Atom n1) (Atom n0))
 -- -----------------------------------------------------------------------------
 -- | patternA
@@ -85,14 +86,14 @@ patternB  = [ [0, 1, 2, 3]
             , [0, 3, 1, 2]
             ]
 -- -----------------------------------------------------------------------------
--- | makeTriple
+-- | make_M_4_Triple
 --
-makeTriple :: forall a.
+make_M_4_Triple :: forall a.
               (Show a, Ord a, Fractional a) =>
               [a] -> [Operator] -> [Cell a]
-makeTriple ns os =
-  filter (not . hasZeroDiv)
-  $ map (gen makeTripleA ns os) patternA ++ map (gen makeTripleB ns os) patternB
+make_M_4_Triple ns os =
+  filter (not . hasZeroDiv) (map (gen make_M_4_Triple_A ns os) patternA ++
+                             map (gen make_M_4_Triple_B ns os) patternB)
   where
     gen make_ n_ o_ i_ = make_
                          (n_ !! fromInteger (head i_))
@@ -103,13 +104,13 @@ makeTriple ns os =
                          (o_ !! 1)
                          (o_ !! 2)
 -- -----------------------------------------------------------------------------
--- | makeN
+-- | make_M_4
 --
-makeN :: forall a.
+make_M_4 :: forall a.
          (Show a, Ord a, Fractional a) =>
          a -> [a] -> [Cell a]
-makeN n a_in =
-  unseen [optimize t | t <- concatMap (makeTriple a_in) $
+make_M_4 n a_in =
+  unseen [optimize t | t <- concatMap (make_M_4_Triple a_in) $
                             replicateM (pred (length a_in)) allOp
                      , isRightTrue $ (== n) <$> eval t
                      ]
@@ -118,17 +119,12 @@ makeN n a_in =
     isRightTrue (Right True)       = True
     isRightTrue _                  = False
     -- -------------------------------------------------------------------------
-    unseen x_ = unseen_ x_ []
+    unseen [] = []
+    unseen x_ = unseen_ x_ Set.empty
       where
-        unseen_   []     _         = []
-        unseen_ a@[_]    []        = a
-        unseen_   (x:xs) seen
-          | expand x `elem` seen   = unseen_ xs seen
-          | otherwise              = x : unseen_ xs (expand x:seen)
--- -----------------------------------------------------------------------------
--- | make10
---
-make10 :: forall a.
-          (Show a, Ord a, Fractional a) =>
-          [a] -> [Cell a]
-make10 = makeN 10
+        unseen_   []     _      =  []
+        unseen_   (x:xs) seen   = unseen__ x xs seen $! expand x
+          where
+            unseen__ x__ xs__ seen_ e
+              | e `Set.member` seen_ =  unseen_ xs__ seen_
+              | otherwise            =  x__ : unseen_ xs__ (Set.insert e seen_)

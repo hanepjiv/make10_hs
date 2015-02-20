@@ -153,13 +153,10 @@ eval    (Triple op l r) =  apply op l r
 hasZeroDiv :: forall a.
               (Show a, Fractional a, Eq a) =>
               Cell a -> Bool
-hasZeroDiv (Triple Op.DIV       l r)
-  | hasZeroDiv l || hasZeroDiv r     = True
-  | otherwise                        = case eval r of Right x -> x == 0
-                                                      _       -> True
-hasZeroDiv (Triple Op.RDIV      l r) = hasZeroDiv (Triple Op.DIV r l)
-hasZeroDiv (Triple _            l r) = hasZeroDiv l || hasZeroDiv r
-hasZeroDiv _                         = False
+hasZeroDiv (Triple Op.DIV  _        (Atom 0))   = True
+hasZeroDiv (Triple Op.RDIV (Atom 0) _)          = True
+hasZeroDiv (Triple _       l        r)          = hasZeroDiv l || hasZeroDiv r
+hasZeroDiv _                                    = False
 -- -----------------------------------------------------------------------------
 -- | rank
 --
@@ -316,13 +313,10 @@ expand :: forall a. (Ord a, Num a) => Cell a -> Exp.Expand a
 expand (Atom 0)                 =  Exp.ExpandList []
 expand (Atom x)                 =  Exp.ExpandList [x]
 expand (Triple op lhs rhs)      =  expandFunc op (expand lhs) (expand rhs)
--- -----------------------------------------------------------------------------
-expandFunc :: forall a.
-                 (Ord a, Num a) =>
-                 Op.Operator -> Exp.Expand a -> Exp.Expand a -> Exp.Expand a
-expandFunc Op.ADD  =     Exp.add
-expandFunc Op.SUB  =     Exp.sub
-expandFunc Op.RSUB =     flip Exp.sub
-expandFunc Op.MUL  =     Exp.mul
-expandFunc Op.DIV  =     Exp.truediv
-expandFunc Op.RDIV =     flip Exp.truediv
+  where
+    expandFunc Op.ADD  =      Exp.add
+    expandFunc Op.SUB  =      Exp.sub
+    expandFunc Op.RSUB = flip Exp.sub
+    expandFunc Op.MUL  =      Exp.mul
+    expandFunc Op.DIV  =      Exp.truediv
+    expandFunc Op.RDIV = flip Exp.truediv

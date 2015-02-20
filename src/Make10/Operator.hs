@@ -18,8 +18,6 @@ module Make10.Operator ( Operator(..)
                        , allOp
                        , invert
                        , swap
-                       , isEnableSwap
-                       , priority
                        , function
                        ) where
 -- =============================================================================
@@ -76,21 +74,6 @@ swap RSUB               =  SUB
 swap MUL                =  MUL
 swap DIV                =  RDIV
 swap RDIV               =  DIV
--- -----------------------------------------------------------------------------
--- | isEnableSwap
---
-isEnableSwap :: Operator -> Bool
-isEnableSwap op = op == swap op
--- -----------------------------------------------------------------------------
--- | priority
---
-priority :: Operator    -> Int
-priority ADD            =  minBound :: Int
-priority SUB            =  minBound :: Int
-priority RSUB           =  minBound :: Int
-priority MUL            =  maxBound :: Int
-priority DIV            =  maxBound :: Int
-priority RDIV           =  maxBound :: Int
 -- -----------------------------------------------------------------------------
 -- | function
 --
