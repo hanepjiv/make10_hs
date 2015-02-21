@@ -34,7 +34,10 @@ library
 -- -----------------------------------------------------------------------------
 executable make10
   main-is:              Main.hs
-  default-extensions:   DeriveDataTypeable
+  default-extensions:     DeriveDataTypeable
+                        , ScopedTypeVariables
+                        , OverloadedStrings
+                        , GADTs
   -- other-extensions:
   -- other-modules:
   build-depends:          base >=4.7.0.2 && <4.8
@@ -53,7 +56,10 @@ executable make10
 test-suite spec
   main-is:              Spec.hs
   type:                 exitcode-stdio-1.0
-  default-extensions:   DeriveDataTypeable
+  default-extensions:     DeriveDataTypeable
+                        , ScopedTypeVariables
+                        , OverloadedStrings
+                        , GADTs
   -- other-extensions:
   -- other-modules:
   build-depends:          base >=4.7.0.2 && <4.8
@@ -74,6 +80,12 @@ test-suite spec
 test-suite doctests
   main-is:              doctests.hs
   type:                 exitcode-stdio-1.0
+  default-extensions:     DeriveDataTypeable
+                        , ScopedTypeVariables
+                        , OverloadedStrings
+                        , GADTs
+  -- other-extensions:
+  -- other-modules:
   build-depends:          base >=4.7.0.2 && <4.8
                         , containers >=0.5 && <0.6
                         , QuickCheck >=2.7.6 && <2.8

@@ -1,6 +1,7 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE      ScopedTypeVariables
+                , OverloadedStrings
+                , GADTs
+                #-}
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 {-|
@@ -45,47 +46,6 @@ import Make10.Cell
 
 -- =============================================================================
 -- -----------------------------------------------------------------------------
--- | make_M_4_Triple_A
---
-make_M_4_Triple_A :: forall a.
-               (Show a, Ord a, Fractional a) =>
-               a -> a -> a -> a -> Operator -> Operator -> Operator -> Cell a
-make_M_4_Triple_A n0 n1 n2 n3 o0 o1 o2 =
-  Triple o2 (Triple o1 (Triple o0 (Atom n3) (Atom n2)) (Atom n1)) (Atom n0)
--- -----------------------------------------------------------------------------
--- | make_M_4_Triple_B
---
-make_M_4_Triple_B :: forall a.
-               (Show a, Ord a, Fractional a) =>
-               a -> a -> a -> a -> Operator -> Operator -> Operator -> Cell a
-make_M_4_Triple_B n0 n1 n2 n3 o0 o1 o2 =
-  Triple o2 (Triple o1 (Atom n3) (Atom n2)) (Triple o0 (Atom n1) (Atom n0))
--- -----------------------------------------------------------------------------
--- | patternA
---
-patternA :: [[Integer]]
-patternA =  [ [0, 1, 2, 3]
-            , [0, 2, 1, 3]
-            , [0, 3, 1, 2]
-            , [1, 0, 2, 3]
-            , [1, 2, 0, 3]
-            , [1, 3, 0, 2]
-            , [2, 0, 1, 3]
-            , [2, 1, 0, 3]
-            , [2, 3, 0, 1]
-            , [3, 0, 1, 2]
-            , [3, 1, 0, 2]
-            , [3, 2, 0, 1]
-            ]
--- -----------------------------------------------------------------------------
--- | patternB
---
-patternB :: [[Integer]]
-patternB  = [ [0, 1, 2, 3]
-            , [0, 2, 1, 3]
-            , [0, 3, 1, 2]
-            ]
--- -----------------------------------------------------------------------------
 -- | make_M_4_Triple
 --
 make_M_4_Triple :: forall a.
@@ -95,6 +55,7 @@ make_M_4_Triple ns os =
   filter (not . hasZeroDiv) (map (gen make_M_4_Triple_A ns os) patternA ++
                              map (gen make_M_4_Triple_B ns os) patternB)
   where
+    -- -------------------------------------------------------------------------
     gen make_ n_ o_ i_ = make_
                          (n_ !! fromInteger (head i_))
                          (n_ !! fromInteger (i_ !! 1))
@@ -103,6 +64,31 @@ make_M_4_Triple ns os =
                          (head o_)
                          (o_ !! 1)
                          (o_ !! 2)
+    -- -------------------------------------------------------------------------
+    make_M_4_Triple_A n0 n1 n2 n3 o0 o1 o2 =
+      Triple o2 (Triple o1 (Triple o0 (Atom n3) (Atom n2)) (Atom n1)) (Atom n0)
+    -- -------------------------------------------------------------------------
+    make_M_4_Triple_B n0 n1 n2 n3 o0 o1 o2 =
+      Triple o2 (Triple o1 (Atom n3) (Atom n2)) (Triple o0 (Atom n1) (Atom n0))
+    -- -------------------------------------------------------------------------
+    patternA =  [ [0, 1, 2, 3]
+                , [0, 2, 1, 3]
+                , [0, 3, 1, 2]
+                , [1, 0, 2, 3]
+                , [1, 2, 0, 3]
+                , [1, 3, 0, 2]
+                , [2, 0, 1, 3]
+                , [2, 1, 0, 3]
+                , [2, 3, 0, 1]
+                , [3, 0, 1, 2]
+                , [3, 1, 0, 2]
+                , [3, 2, 0, 1]
+                ]
+    -- -------------------------------------------------------------------------
+    patternB  = [ [0, 1, 2, 3]
+                , [0, 2, 1, 3]
+                , [0, 3, 1, 2]
+                ]
 -- -----------------------------------------------------------------------------
 -- | make_M_4
 --

@@ -1,6 +1,7 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE      ScopedTypeVariables
+                , OverloadedStrings
+                , GADTs
+                #-}
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 {-|

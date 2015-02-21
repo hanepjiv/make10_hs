@@ -1,4 +1,11 @@
 -- -*- mode:haskell;coding:utf-8-unix; -*-
 
 :set +s
+:set +t
+
+:set -DeriveDataTypeable -ScopedTypeVariables -OverloadedStrings -GADTs
+
+:module + Control.Applicative Control.Arrow
+
+
 :set -isrc

@@ -1,6 +1,7 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE      ScopedTypeVariables
+                , OverloadedStrings
+                , GADTs
+                #-}
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 {-|
@@ -225,6 +226,20 @@ rightUnsafe :: Cell a                        -> Cell a
 rightUnsafe (Triple op (Triple lop ll lr) r) =  Triple lop ll (Triple op lr r)
 rightUnsafe _                                =  undefined
 -- -----------------------------------------------------------------------------
+-- | rightSafe
+--
+rightSafe :: forall a. Cell a -> Cell a
+rightSafe  x_@(Triple _ (Triple rop_ _ _) _) =
+  setRightOp (Op.invert rop_) $ rightUnsafe x_
+rightSafe  x_                                = x_
+-- -----------------------------------------------------------------------------
+-- | invertSafe
+--
+invertSafe :: forall a. Cell a -> Cell a
+invertSafe    (Triple op_ l_ r_@(Triple {}))     =
+  Triple (Op.invert op_) l_ $ swapUnsafe r_
+invertSafe x_                                    = x_
+-- -----------------------------------------------------------------------------
 -- | optimize
 --
 -- >>> optimize $ Triple Op.RSUB (Atom (1 % 1)) (Atom (2 % 1))
@@ -265,16 +280,16 @@ optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
     opt_ADD x_@(Triple Op.ADD _ (Triple Op.ADD _ _)) = opt_change x_
     opt_ADD x_                                       = x_
     -- -------------------------------------------------------------------------
-    opt_SUB x_@(Triple Op.SUB (Triple Op.SUB _ _) _) = opt_rightSafe x_
-    opt_SUB x_@(Triple Op.SUB _ (Triple Op.SUB _ _)) = opt_invertSafe x_
+    opt_SUB x_@(Triple Op.SUB (Triple Op.SUB _ _) _) = optimize $ rightSafe x_
+    opt_SUB x_@(Triple Op.SUB _ (Triple Op.SUB _ _)) = optimize $ invertSafe x_
     opt_SUB x_                                       = x_
     -- -------------------------------------------------------------------------
     opt_MUL x_@(Triple Op.MUL (Triple Op.MUL _ _) _) = optimize $ rightUnsafe x_
     opt_MUL x_@(Triple Op.MUL _ (Triple Op.MUL _ _)) = opt_change x_
     opt_MUL x_                                       = x_
     -- -------------------------------------------------------------------------
-    opt_DIV x_@(Triple Op.DIV (Triple Op.DIV _ _) _) = opt_rightSafe x_
-    opt_DIV x_@(Triple Op.DIV _ (Triple Op.DIV _ _)) = opt_invertSafe x_
+    opt_DIV x_@(Triple Op.DIV (Triple Op.DIV _ _) _) = optimize $ rightSafe x_
+    opt_DIV x_@(Triple Op.DIV _ (Triple Op.DIV _ _)) = optimize $ invertSafe x_
 {-
     opt_DIV x_@(Triple Op.DIV _ r_)                  =
       case eval r_ of
@@ -284,14 +299,6 @@ optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
         _       -> x_
 -}
     opt_DIV        x_                                = x_
-    -- -------------------------------------------------------------------------
-    opt_rightSafe  x_@(Triple _ (Triple rop_ _ _) _) =
-      optimize $ setRightOp (Op.invert rop_) $ rightUnsafe x_
-    opt_rightSafe  x_                                = x_
-    -- -------------------------------------------------------------------------
-    opt_invertSafe    (Triple op_ l_ r_@(Triple {})) =
-      optimize $ Triple (Op.invert op_) l_ $ swapUnsafe r_
-    opt_invertSafe x_                                = x_
     -- -------------------------------------------------------------------------
     opt_change     x_@(Triple op_ l_ (Triple rop_ rl_ rr_))
       | rank l_ > rank rl_ = Triple op_ rl_ $ opt $ Triple rop_ l_ rr_
