@@ -20,7 +20,7 @@ library
   -- other-modules:
   -- other-extensions:
   build-depends:          base >=4.7.0.2 && <4.8
-                        , containers >=0.5 && <0.6
+                        , containers >=0.5.5.1 && <0.6
   hs-source-dirs:       src
   default-language:     Haskell2010
   ghc-options:          -fllvm
@@ -42,7 +42,7 @@ executable make10
   -- other-extensions:
   -- other-modules:
   build-depends:          base >=4.7.0.2 && <4.8
-                        , containers >=0.5 && <0.6
+                        , containers >=0.5.6.3 && <0.6
   hs-source-dirs:       example/make10, src
   default-language:     Haskell2010
   ghc-options:          -fllvm
@@ -65,9 +65,9 @@ test-suite spec
   -- other-extensions:
   -- other-modules:
   build-depends:          base >=4.7.0.2 && <4.8
-                        , containers >=0.5 && <0.6
-                        , QuickCheck >=2.7.6 && <2.8
-                        , hspec >=2.1.4 && <2.2
+                        , containers >=0.5.6.3 && <0.6
+                        , QuickCheck >=2.8 && <2.9
+                        , hspec >=2.1.5 && <2.2
   hs-source-dirs:       test src
   default-language:     Haskell2010
   ghc-options:          -fllvm
@@ -90,9 +90,9 @@ test-suite doctests
   -- other-extensions:
   -- other-modules:
   build-depends:          base >=4.7.0.2 && <4.8
-                        , containers >=0.5 && <0.6
-                        , QuickCheck >=2.7.6 && <2.8
-                        , doctest >=0.9.12 && <0.10
+                        , containers >=0.5.6.3 && <0.6
+                        , QuickCheck >=2.8 && <2.9
+                        , doctest >=0.9.13 && <0.10
   hs-source-dirs:       test
   default-language:     Haskell2010
   ghc-options:          -fllvm

@@ -7,7 +7,7 @@
 {-|
 Module      : Make10.Operator
 Description : puzzle game
-Copyright   : (c) hanepjiv, 2013
+Copyright   : (c) hanepjiv, 2015
 License     : BSD3
 Maintainer  : hanepjiv@gmail.com
 Stability   : experimental
@@ -98,8 +98,8 @@ swap RDIV               =  DIV
 --
 function :: (Fractional a) => Operator -> a -> a -> a
 function ADD            =  (+)
-function RSUB           =  flip (-)
 function SUB            =  (-)
+function RSUB           =  flip (-)
 function MUL            =  (*)
 function DIV            =  (/)
 function RDIV           =  flip (/)
