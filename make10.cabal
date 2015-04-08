@@ -19,12 +19,11 @@ library
   exposed-modules:      Make10
   -- other-modules:
   -- other-extensions:
-  build-depends:          base >=4.7.0.2 && <4.8
+  build-depends:          base >=4.7.0.1 && <4.8
                         , containers >=0.5.5.1 && <0.6
   hs-source-dirs:       src
   default-language:     Haskell2010
-  ghc-options:          -fllvm
-                        -Wall
+  ghc-options:          -Wall
                         -fwarn-tabs
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
@@ -41,12 +40,11 @@ executable make10
                         , GADTs
   -- other-extensions:
   -- other-modules:
-  build-depends:          base >=4.7.0.2 && <4.8
+  build-depends:          base >=4.7.0.1 && <4.8
                         , containers >=0.5.5.1 && <0.6
   hs-source-dirs:       example/make10, src
   default-language:     Haskell2010
-  ghc-options:          -fllvm
-                        -Wall
+  ghc-options:          -Wall
                         -fwarn-tabs
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
@@ -64,14 +62,13 @@ test-suite spec
                         , GADTs
   -- other-extensions:
   -- other-modules:
-  build-depends:          base >=4.7.0.2 && <4.8
+  build-depends:          base >=4.7.0.1 && <4.8
                         , containers >=0.5.5.1 && <0.6
                         , QuickCheck >=2.6 && <2.7
                         , hspec >=2.1.5 && <2.2
   hs-source-dirs:       test src
   default-language:     Haskell2010
-  ghc-options:          -fllvm
-                        -Wall
+  ghc-options:          -Wall
                         -fwarn-tabs
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
@@ -89,14 +86,13 @@ test-suite doctests
                         , GADTs
   -- other-extensions:
   -- other-modules:
-  build-depends:          base >=4.7.0.2 && <4.8
+  build-depends:          base >=4.7.0.1 && <4.8
                         , containers >=0.5.5.1 && <0.6
                         , QuickCheck >=2.6 && <2.7
                         , doctest >=0.9.13 && <0.10
   hs-source-dirs:       test
   default-language:     Haskell2010
-  ghc-options:          -fllvm
-                        -Wall
+  ghc-options:          -Wall
                         -fwarn-tabs
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
