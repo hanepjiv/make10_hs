@@ -321,6 +321,10 @@ expand (Atom 0)                 =  Exp.ExpandList []
 expand (Atom x)                 =  Exp.ExpandList [x]
 expand (Triple op lhs rhs)      =  expandFunc op (expand lhs) (expand rhs)
   where
+    expandFunc :: forall a0.
+                  (Ord a0, Num a0) => Op.Operator -> Exp.Expand a0
+                                                  -> Exp.Expand a0
+                                                  -> Exp.Expand a0
     expandFunc Op.ADD  =      Exp.add
     expandFunc Op.SUB  =      Exp.sub
     expandFunc Op.RSUB = flip Exp.sub

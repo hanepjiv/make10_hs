@@ -38,6 +38,8 @@ import qualified Data.Set as Set
 
 import Make10.Operator
 import Make10.Cell
+import Make10.Expand    ( Expand(..)
+                        )
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 
@@ -56,6 +58,9 @@ make_M_4_Triple ns os =
                              map (gen make_M_4_Triple_B ns os) patternB)
   where
     -- -------------------------------------------------------------------------
+    gen :: forall t a0 a1.
+             (a0 -> a0 -> a0 -> a0 -> a1 -> a1 -> a1 -> t)
+             -> [a0] -> [a1] -> [Integer] -> t
     gen make_ n_ o_ i_ = make_
                          (n_ !! fromInteger (head i_))
                          (n_ !! fromInteger (i_ !! 1))
@@ -65,9 +70,15 @@ make_M_4_Triple ns os =
                          (o_ !! 1)
                          (o_ !! 2)
     -- -------------------------------------------------------------------------
+    make_M_4_Triple_A :: forall a0.
+                         a0 -> a0 -> a0 -> a0
+                           -> Operator -> Operator -> Operator -> Cell a0
     make_M_4_Triple_A n0 n1 n2 n3 o0 o1 o2 =
       Triple o2 (Triple o1 (Triple o0 (Atom n3) (Atom n2)) (Atom n1)) (Atom n0)
     -- -------------------------------------------------------------------------
+    make_M_4_Triple_B :: forall a0.
+                         a0 -> a0 -> a0 -> a0
+                           -> Operator -> Operator -> Operator -> Cell a0
     make_M_4_Triple_B n0 n1 n2 n3 o0 o1 o2 =
       Triple o2 (Triple o1 (Atom n3) (Atom n2)) (Triple o0 (Atom n1) (Atom n0))
     -- -------------------------------------------------------------------------
@@ -102,12 +113,16 @@ make_M_4 n a_in =
                      ]
   where
     -- -------------------------------------------------------------------------
+    isRightTrue :: forall t. Either t Bool -> Bool
     isRightTrue (Right True)       = True
     isRightTrue _                  = False
     -- -------------------------------------------------------------------------
+    unseen :: forall a0. (Ord a0, Num a0) => [Cell a0] -> [Cell a0]
     unseen [] = []
     unseen x_ = unseen_ x_ Set.empty
       where
+        unseen_ :: forall a1. (Ord a1, Num a1) =>
+                   [Cell a1] -> Set.Set (Make10.Expand.Expand a1) -> [Cell a1]
         unseen_   []     _      =  []
         unseen_   (x:xs) seen   = unseen__ x xs seen $! expand x
           where
