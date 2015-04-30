@@ -23,8 +23,10 @@ library
                         , containers          >= 0.5.5.1      && < 0.6
   hs-source-dirs:       src
   default-language:     Haskell2010
-  ghc-options:          -Wall
+  ghc-options:          -fwarn-safe
+                        -Wall
                         -Werror
+                        -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
                         -fwarn-duplicate-constraints
@@ -36,6 +38,7 @@ library
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
                         -fwarn-missing-fields
+--                        -fwarn-missing-import-lists
                         -fwarn-missing-methods
                         -fwarn-missing-signatures
                         -fwarn-missing-local-sigs
@@ -68,8 +71,10 @@ executable make10
                         , containers          >= 0.5.5.1      && < 0.6
   hs-source-dirs:       example/make10, src
   default-language:     Haskell2010
-  ghc-options:          -Wall
+  ghc-options:          -fwarn-unsafe
+                        -Wall
                         -Werror
+                        -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
                         -fwarn-duplicate-constraints
@@ -81,6 +86,7 @@ executable make10
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
                         -fwarn-missing-fields
+--                        -fwarn-missing-import-lists
                         -fwarn-missing-methods
                         -fwarn-missing-signatures
                         -fwarn-missing-local-sigs
@@ -116,8 +122,10 @@ test-suite make10-spec
                         , hspec               >= 2.1.6        && < 2.2
   hs-source-dirs:       test src
   default-language:     Haskell2010
-  ghc-options:          -Wall
+  ghc-options:          -fwarn-unsafe
+                        -Wall
                         -Werror
+                        -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
                         -fwarn-duplicate-constraints
@@ -129,6 +137,7 @@ test-suite make10-spec
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
                         -fwarn-missing-fields
+--                        -fwarn-missing-import-lists
                         -fwarn-missing-methods
                         -fwarn-missing-signatures
                         -fwarn-missing-local-sigs
@@ -164,8 +173,10 @@ test-suite make10-doctests
                         , doctest             >= 0.9.13       && < 0.10
   hs-source-dirs:       test
   default-language:     Haskell2010
-  ghc-options:          -Wall
+  ghc-options:          -fwarn-unsafe
+                        -Wall
                         -Werror
+                        -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
                         -fwarn-duplicate-constraints
@@ -177,6 +188,7 @@ test-suite make10-doctests
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
                         -fwarn-missing-fields
+--                        -fwarn-missing-import-lists
                         -fwarn-missing-methods
                         -fwarn-missing-signatures
                         -fwarn-missing-local-sigs
