@@ -16,15 +16,19 @@ build-type:             Simple
 cabal-version:          >= 1.10
 -- -----------------------------------------------------------------------------
 library
-  exposed-modules:      Make10
+  exposed-modules:      Game.Make10
   -- other-modules:
+  default-extensions:     DeriveDataTypeable
+                        , ScopedTypeVariables
+                        , OverloadedStrings
+                        , GADTs
+                        , Safe
   -- other-extensions:
-  build-depends:          base                >= 4.7.0.2      && < 4.8
-                        , containers          >= 0.5.5.1      && < 0.6
+  build-depends:          base                  >= 4.7.0.2      && < 4.8
+                        , containers            >= 0.5.5.1      && < 0.6
   hs-source-dirs:       src
   default-language:     Haskell2010
-  ghc-options:          -fwarn-safe
-                        -Wall
+  ghc-options:          -Wall
                         -Werror
                         -fdefer-type-errors
                         -fhelpful-errors
@@ -50,6 +54,7 @@ library
                         -fwarn-tabs
                         -fwarn-type-defaults
                         -fwarn-unrecognised-pragmas
+                        -fwarn-unsafe
                         -fwarn-unused-binds
                         -fwarn-unused-imports
                         -fwarn-unused-matches
@@ -61,18 +66,18 @@ library
 -- -----------------------------------------------------------------------------
 executable make10
   main-is:              Main.hs
+  -- other-modules:
   default-extensions:     DeriveDataTypeable
                         , ScopedTypeVariables
                         , OverloadedStrings
                         , GADTs
+                        , Safe
   -- other-extensions:
-  -- other-modules:
-  build-depends:          base                >= 4.7.0.2      && < 4.8
-                        , containers          >= 0.5.5.1      && < 0.6
+  build-depends:          base                  >= 4.7.0.2      && < 4.8
+                        , containers            >= 0.5.5.1      && < 0.6
   hs-source-dirs:       example/make10, src
   default-language:     Haskell2010
-  ghc-options:          -fwarn-unsafe
-                        -Wall
+  ghc-options:          -Wall
                         -Werror
                         -fdefer-type-errors
                         -fhelpful-errors
@@ -98,6 +103,7 @@ executable make10
                         -fwarn-tabs
                         -fwarn-type-defaults
                         -fwarn-unrecognised-pragmas
+                        -fwarn-unsafe
                         -fwarn-unused-binds
                         -fwarn-unused-imports
                         -fwarn-unused-matches
@@ -116,13 +122,13 @@ test-suite make10-spec
                         , GADTs
   -- other-extensions:
   -- other-modules:
-  build-depends:          base                >= 4.7.0.2      && < 4.8
-                        , containers          >= 0.5.5.1      && < 0.6
-                        , QuickCheck          >= 2.8.1        && < 2.9
-                        , hspec               >= 2.1.6        && < 2.2
+  build-depends:          base                  >= 4.7.0.2      && < 4.8
+                        , containers            >= 0.5.5.1      && < 0.6
+                        , QuickCheck            >= 2.8.1        && < 2.9
+                        , hspec                 >= 2.1.7        && < 2.2
   hs-source-dirs:       test src
   default-language:     Haskell2010
-  ghc-options:          -fwarn-unsafe
+  ghc-options:
                         -Wall
                         -Werror
                         -fdefer-type-errors
@@ -149,6 +155,7 @@ test-suite make10-spec
                         -fwarn-tabs
                         -fwarn-type-defaults
                         -fwarn-unrecognised-pragmas
+--                        -fwarn-unsafe
                         -fwarn-unused-binds
                         -fwarn-unused-imports
                         -fwarn-unused-matches
@@ -167,14 +174,13 @@ test-suite make10-doctests
                         , GADTs
   -- other-extensions:
   -- other-modules:
-  build-depends:          base                >= 4.7.0.2      && < 4.8
-                        , containers          >= 0.5.5.1      && < 0.6
-                        , QuickCheck          >= 2.8.1        && < 2.9
-                        , doctest             >= 0.9.13       && < 0.10
+  build-depends:          base                  >= 4.7.0.2      && < 4.8
+                        , containers            >= 0.5.5.1      && < 0.6
+                        , QuickCheck            >= 2.8.1        && < 2.9
+                        , doctest               >= 0.9.13       && < 0.10
   hs-source-dirs:       test
   default-language:     Haskell2010
-  ghc-options:          -fwarn-unsafe
-                        -Wall
+  ghc-options:          -Wall
                         -Werror
                         -fdefer-type-errors
                         -fhelpful-errors
@@ -200,6 +206,7 @@ test-suite make10-doctests
                         -fwarn-tabs
                         -fwarn-type-defaults
                         -fwarn-unrecognised-pragmas
+--                        -fwarn-unsafe
                         -fwarn-unused-binds
                         -fwarn-unused-imports
                         -fwarn-unused-matches

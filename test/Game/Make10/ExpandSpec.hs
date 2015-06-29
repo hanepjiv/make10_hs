@@ -5,7 +5,7 @@
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 {-|
-Module      : Make10Spec
+Module      : Make10.ExpandSpec
 Description : puzzle game
 Copyright   : (c) hanepjiv, 2015
 License     : BSD3
@@ -15,19 +15,18 @@ Portability : portable
 
 make10, 10-puzzle
 -}
-module Make10Spec(spec) where
+module Game.Make10.ExpandSpec   ( spec
+                                ) where
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 import Prelude
 
 import Test.Hspec
 --import Test.QuickCheck
+
+--import Game.Make10
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 spec :: Spec
-spec = return ()
-{--
-  describe "select" $
-    it "select" $ property $
-      \ xs -> length (xs :: [Int]) == length (select xs)
---}
+spec =  --do
+  return ()

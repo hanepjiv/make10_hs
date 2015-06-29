@@ -1,11 +1,12 @@
 {-# LANGUAGE      ScopedTypeVariables
                 , OverloadedStrings
                 , GADTs
+                , Safe
                 #-}
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 {-|
-Module      : Make10
+Module      : Game.Make10
 Description : puzzle game
 Copyright   : (c) hanepjiv, 2015
 License     : BSD3
@@ -15,36 +16,37 @@ Portability : portable
 
 make10, 10-puzzle
 -}
-module Make10 ( Operator(..)
-              , function
-                -- -------------------------------------------------------------
-              , Cell(..)
-              , apply
-              , eval
-              , optimize
-              , expand
-                -- -------------------------------------------------------------
-              , make_M_4
-              ) where
+module Game.Make10              ( Operator(..)
+                                , function
+                                -- ---------------------------------------------
+                                , Cell(..)
+                                , apply
+                                , eval
+                                , optimize
+                                , expand
+                                -- ---------------------------------------------
+                                , make_M_4
+                                ) where
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 import Prelude
 
 import Control.Applicative
-import Control.Monad    ( replicateM
-                        )
+import Control.Monad            ( replicateM
+                                )
 
 import qualified Data.Set as Set
 
-import Make10.Operator
-import Make10.Cell
-import Make10.Expand    ( Expand(..)
-                        )
+import Game.Make10.Operator
+import Game.Make10.Cell
+import Game.Make10.Expand       ( Expand(..)
+                                )
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 
 -- $setup
 -- >>> :set -XOverloadedStrings
+--
 
 -- =============================================================================
 -- -----------------------------------------------------------------------------
@@ -122,7 +124,8 @@ make_M_4 n a_in =
     unseen x_ = unseen_ x_ Set.empty
       where
         unseen_ :: forall a1. (Ord a1, Num a1) =>
-                   [Cell a1] -> Set.Set (Make10.Expand.Expand a1) -> [Cell a1]
+                   [Cell a1] -> Set.Set (Game.Make10.Expand.Expand a1)
+                             -> [Cell a1]
         unseen_   []     _      =  []
         unseen_   (x:xs) seen   = unseen__ x xs seen $! expand x
           where

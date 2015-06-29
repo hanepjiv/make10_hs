@@ -1,11 +1,12 @@
 {-# LANGUAGE      ScopedTypeVariables
                 , OverloadedStrings
                 , GADTs
+                , Safe
                 #-}
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 {-|
-Module      : Make10.Expand
+Module      : Game.Make10.Expand
 Description : puzzle game
 Copyright   : (c) hanepjiv, 2015
 License     : BSD3
@@ -15,19 +16,19 @@ Portability : portable
 
 make10, 10-puzzle
 -}
-module Make10.Expand    ( Expand(..)
-                        , optimize
-                        , add
-                        , sub
-                        , mul
-                        , truediv
-                        ) where
+module Game.Make10.Expand       ( Expand(..)
+                                , optimize
+                                , add
+                                , sub
+                                , mul
+                                , truediv
+                                ) where
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 import Prelude
 
-import Data.List        ( sort,
-                        )
+import Data.List                ( sort,
+                                )
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 

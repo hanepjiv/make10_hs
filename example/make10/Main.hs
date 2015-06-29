@@ -43,7 +43,7 @@ import System.IO
 import Text.Read                ( readEither
                                 )
 
-import qualified Make10
+import qualified Game.Make10
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ main :: IO ()
 -- UNUSED
 main = do
   putStrLn "# Enter the 4 numbers."
-  result <- Make10.make10_M_4 10
+  result <- Game.Make10.make10_M_4 10
             <$> map (% (1 :: Integer))
             <$> replicateM 4 ( do
                                   putStr ">>> "
@@ -84,7 +84,7 @@ main = flip runKleisli () $
                                >>> (Kleisli $ const $ hFlush stdout)
                                >>> (Kleisli $ const readLn)))
                 >>^ map (% 1)))
-              >>> arr (uncurry Make10.make_M_4)
+              >>> arr (uncurry Game.Make10.make_M_4)
               >>> (((Kleisli $ const $ putStr "# length = ") &&&
                     (Kleisli $ print <<< length)) &&&
                    ((Kleisli $ const $ putStr "# result = ") &&&

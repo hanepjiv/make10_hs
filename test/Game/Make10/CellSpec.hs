@@ -15,7 +15,8 @@ Portability : portable
 
 make10, 10-puzzle
 -}
-module Make10.CellSpec(spec) where
+module Game.Make10.CellSpec     ( spec
+                                ) where
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 import Prelude
@@ -23,10 +24,10 @@ import Prelude
 import Test.Hspec
 import Test.QuickCheck
 
-import Make10 hiding    ( Operator
-                        )
+import Game.Make10 hiding       ( Operator
+                                )
 
-import Make10.Arbitrary.Operator
+import Game.Make10.Arbitrary.Operator
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 spec :: Spec

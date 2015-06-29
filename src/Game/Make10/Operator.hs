@@ -1,11 +1,12 @@
 {-# LANGUAGE      ScopedTypeVariables
                 , OverloadedStrings
                 , GADTs
+                , Safe
                 #-}
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 {-|
-Module      : Make10.Operator
+Module      : Game.Make10.Operator
 Description : puzzle game
 Copyright   : (c) hanepjiv, 2015
 License     : BSD3
@@ -15,12 +16,12 @@ Portability : portable
 
 make10, 10-puzzle
 -}
-module Make10.Operator ( Operator(..)
-                       , allOp
-                       , invert
-                       , swap
-                       , function
-                       ) where
+module Game.Make10.Operator     ( Operator(..)
+                                , allOp
+                                , invert
+                                , swap
+                                , function
+                                ) where
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 import Prelude

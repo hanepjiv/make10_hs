@@ -21,7 +21,7 @@ main :: IO ()
 main =  flip runKleisli () $
         (Kleisli $ const $ DocTest.doctest [ "-packageghc"
                                            , "-isrc"
-                                           , "src/Make10.hs"
+                                           , "src/Game/Make10.hs"
                                            ])
         >>>
         (Kleisli $ const $ DocTest.doctest [ "-packageghc"

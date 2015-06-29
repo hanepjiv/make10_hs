@@ -1,11 +1,12 @@
 {-# LANGUAGE      ScopedTypeVariables
                 , OverloadedStrings
                 , GADTs
+                , Safe
                 #-}
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 {-|
-Module      : Make10.Cell
+Module      : Game.Make10.Cell
 Description : puzzle game
 Copyright   : (c) hanepjiv, 2015
 License     : BSD3
@@ -15,13 +16,13 @@ Portability : portable
 
 make10, 10-puzzle
 -}
-module Make10.Cell ( Cell(..)
-                   , apply
-                   , eval
-                   , hasZeroDiv
-                   , optimize
-                   , expand
-                   ) where
+module Game.Make10.Cell         ( Cell(..)
+                                , apply
+                                , eval
+                                , hasZeroDiv
+                                , optimize
+                                , expand
+                                ) where
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 import Prelude
@@ -30,8 +31,8 @@ import Control.Applicative      ( (<$>)
                                 , (<*>)
                                 )
 
-import qualified Make10.Operator as Op
-import qualified Make10.Expand as Exp
+import qualified Game.Make10.Operator as Op
+import qualified Game.Make10.Expand as Exp
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 
@@ -40,6 +41,9 @@ import qualified Make10.Expand as Exp
 -- >>> import Data.Ratio((%), Ratio, Rational)
 
 -- =============================================================================
+-- -----------------------------------------------------------------------------
+-- data CellTagAtom
+-- data CellTagTriple
 -- -----------------------------------------------------------------------------
 -- | Cell
 --
@@ -55,9 +59,9 @@ import qualified Make10.Expand as Exp
 -- :}
 -- 1 % 1 + (1 % 2 + 2 % 3)
 --
-data Cell a where { Atom        :: a -> Cell a
-                  ; Triple      :: !Op.Operator -> Cell a -> Cell a -> Cell a
-                  } deriving (Eq)
+data Cell a where
+    Atom   :: a -> Cell a
+    Triple :: !Op.Operator -> Cell a -> Cell a -> Cell a
 -- -----------------------------------------------------------------------------
 instance (Show a) => Show (Cell a) where
     showsPrec d (Atom x)        = showsPrec (succ d) x
@@ -67,20 +71,17 @@ instance (Show a) => Show (Cell a) where
 -- -----------------------------------------------------------------------------
 -- | setOp
 --
--- >>> setOp Op.ADD (Atom (1 % 1))
--- 1 % 1
---
 -- >>> setOp Op.MUL (Triple Op.ADD (Atom (1 % 1)) (Atom (2 % 1)))
 -- 1 % 1 * 2 % 1
 --
-setOp :: Op.Operator      -> Cell a               -> Cell a
-setOp    op                  (Triple _ l r)       =  Triple op l r
-setOp    _                   a                    =  a
+-- >>> setOp Op.ADD (Atom (1 % 1))
+-- *** Exception: Game.Make10.Cell.setOp
+--
+setOp :: Op.Operator    -> Cell a       -> Cell a
+setOp    op             (Triple _ l r)   = Triple op l r
+setOp    _              _                = error "Game.Make10.Cell.setOp"
 -- -----------------------------------------------------------------------------
 -- | setRightOp
---
--- >>> setRightOp Op.ADD (Atom (1 % 1))
--- 1 % 1
 --
 -- >>> :{
 --  setRightOp Op.MUL
@@ -90,9 +91,12 @@ setOp    _                   a                    =  a
 -- :}
 -- 1 % 1 + (1 % 1 * 2 % 1)
 --
-setRightOp :: Op.Operator -> Cell a           -> Cell a
-setRightOp    rop            (Triple op l r)  = Triple op l $ setOp rop r
-setRightOp    _              a                =  a
+-- >>> setRightOp Op.ADD (Atom (1 % 1))
+-- *** Exception: Game.Make10.Cell.setRightOp
+--
+setRightOp :: Op.Operator -> Cell a       -> Cell a
+setRightOp    rop         (Triple op l r)  = Triple op l $ setOp rop r
+setRightOp    _           _                = error "Game.Make10.Cell.setRightOp"
 -- -----------------------------------------------------------------------------
 -- | apply
 --
@@ -168,34 +172,31 @@ rank    (Triple _ l r)  =  10 + (rank l + rank r)
 -- -----------------------------------------------------------------------------
 -- | swap
 --
--- >>> swap $ Atom (1 % 1)
--- *** Exception: Prelude.undefined
---
 -- >>> swap $ Triple Op.ADD (Atom (1 % 1)) (Atom (2 % 1))
 -- 2 % 1 + 1 % 1
 --
+-- >>> swap $ Atom (1 % 1)
+-- *** Exception: Game.Make10.Cell.swap
+--
 swap ::         Cell a          -> Cell a
 swap            (Triple op l r) =  Triple (Op.swap op) r l
-swap            _               =  undefined
+swap            _               =  error "Game.Make10.Cell.swap"
 -- -----------------------------------------------------------------------------
 -- | swapUnsafe
---
--- >>> swapUnsafe $ Atom (1 % 1)
--- *** Exception: Prelude.undefined
 --
 -- >>> swapUnsafe $ Triple Op.ADD (Atom (1 % 1)) (Atom (2 % 1))
 -- 2 % 1 + 1 % 1
 --
+-- >>> swapUnsafe $ Atom (1 % 1)
+-- *** Exception: Game.Make10.Cell.swapUnsafe
+--
 swapUnsafe ::   Cell a          -> Cell a
 swapUnsafe      (Triple op l r) =  Triple op r l
-swapUnsafe      _               =  undefined
+swapUnsafe      _               =  error "Game.Make10.Cell.swapUnsafe"
 -- -----------------------------------------------------------------------------
 {-
 -- UNUSED
 -- | leftUnsafe
---
--- >>> leftUnsafe $ Atom (1 % 1)
--- *** Exception: Prelude.undefined
 --
 -- >>> :{
 --  leftUnsafe $ Triple Op.MUL
@@ -204,16 +205,16 @@ swapUnsafe      _               =  undefined
 -- :}
 -- Triple MUL (Triple MUL (Atom (1 % 1)) (Atom (2 % 1))) (Atom (3 % 1))
 --
-leftUnsafe :: Cell a                            -> Cell a
+-- >>> leftUnsafe $ Atom (1 % 1)
+-- *** Exception: Game.Make10.Cell.leftUnsafe
+--
+leftUnsafe :: Cell a                           -> Cell a
 leftUnsafe    (Triple op l (Triple rop rl rr))  =
   Triple rop (Triple op l rl) rr
-leftUnsafe    _                                 =  undefined
+leftUnsafe    _ =  error "Game.Make10.Cell.leftUnsafe"
 -- -}
 -- -----------------------------------------------------------------------------
 -- | rightUnsafe
---
--- >>> rightUnsafe $ Atom (1 % 1)
--- *** Exception: Prelude.undefined
 --
 -- >>> :{
 --  rightUnsafe $ Triple Op.MUL
@@ -222,9 +223,12 @@ leftUnsafe    _                                 =  undefined
 -- :}
 -- 1 % 1 * (2 % 1 * 3 % 1)
 --
+-- >>> rightUnsafe $ Atom (1 % 1)
+-- *** Exception: Game.Make10.Cell.rightUnsafe
+--
 rightUnsafe :: Cell a                        -> Cell a
-rightUnsafe (Triple op (Triple lop ll lr) r) =  Triple lop ll (Triple op lr r)
-rightUnsafe _                                =  undefined
+rightUnsafe (Triple op (Triple lop ll lr) r)  = Triple lop ll (Triple op lr r)
+rightUnsafe _ =  error "Game.Make10.Cell.rightUnsafe"
 -- -----------------------------------------------------------------------------
 -- | rightSafe
 --
