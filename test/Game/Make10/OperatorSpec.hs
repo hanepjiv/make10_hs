@@ -8,7 +8,7 @@
 Module      : Make10.OperatorSpec
 Description : puzzle game
 Copyright   : (c) hanepjiv, 2015
-License     : BSD3
+License     : MIT
 Maintainer  : hanepjiv@gmail.com
 Stability   : experimental
 Portability : portable
