@@ -124,7 +124,7 @@ test-suite make10-spec
   -- other-modules:
   build-depends:          base                  >= 4.7.0.2      && < 4.8
                         , containers            >= 0.5.5.1      && < 0.6
-                        , QuickCheck            >= 2.8.1        && < 2.9
+                        , QuickCheck            >= 2.7.6        && < 2.8
                         , hspec                 >= 2.1.7        && < 2.2
   hs-source-dirs:       test src
   default-language:     Haskell2010
@@ -176,7 +176,7 @@ test-suite make10-doctests
   -- other-modules:
   build-depends:          base                  >= 4.7.0.2      && < 4.8
                         , containers            >= 0.5.5.1      && < 0.6
-                        , QuickCheck            >= 2.8.1        && < 2.9
+                        , QuickCheck            >= 2.7.6        && < 2.8
                         , doctest               >= 0.9.13       && < 0.10
   hs-source-dirs:       test
   default-language:     Haskell2010
