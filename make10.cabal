@@ -16,20 +16,23 @@ build-type:             Simple
 cabal-version:          >= 1.10
 -- -----------------------------------------------------------------------------
 library
-  exposed-modules:      Game.Make10
-  -- other-modules:
+  exposed-modules:        Game.Make10
+                        , Game.Make10.Cell
+                        , Game.Make10.Expand
+                        , Game.Make10.Operator
+--  other-modules:
   default-extensions:     DeriveDataTypeable
                         , ScopedTypeVariables
                         , OverloadedStrings
                         , GADTs
                         , Safe
-  -- other-extensions:
+--  other-extensions:
   build-depends:          base                  >= 4.7.0.2      && < 4.8
                         , containers            >= 0.5.5.1      && < 0.6
   hs-source-dirs:       src
   default-language:     Haskell2010
   ghc-options:          -Wall
-                        -Werror
+--                        -Werror
                         -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
@@ -61,24 +64,24 @@ library
                         -fwarn-unused-do-bind
                         -fwarn-wrong-do-bind
                         -fwarn-warnings-deprecations
-                        -fwarn-amp
                         -fwarn-typed-holes
 -- -----------------------------------------------------------------------------
 executable make10
   main-is:              Main.hs
-  -- other-modules:
+--  other-modules:
   default-extensions:     DeriveDataTypeable
                         , ScopedTypeVariables
                         , OverloadedStrings
                         , GADTs
                         , Safe
-  -- other-extensions:
+--  other-extensions:
   build-depends:          base                  >= 4.7.0.2      && < 4.8
                         , containers            >= 0.5.5.1      && < 0.6
-  hs-source-dirs:       example/make10, src
+                        , make10
+  hs-source-dirs:       example/make10
   default-language:     Haskell2010
   ghc-options:          -Wall
-                        -Werror
+--                        -Werror
                         -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
@@ -110,27 +113,31 @@ executable make10
                         -fwarn-unused-do-bind
                         -fwarn-wrong-do-bind
                         -fwarn-warnings-deprecations
-                        -fwarn-amp
                         -fwarn-typed-holes
 -- -----------------------------------------------------------------------------
 test-suite make10-spec
-  main-is:              Spec.hs
   type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  other-modules:          Game.Make10.Arbitrary.Operator
+                        , Game.Make10.CellSpec
+                        , Game.Make10.ExpandSpec
+                        , Game.Make10.OperatorSpec
+                        , Game.Make10Spec
   default-extensions:     DeriveDataTypeable
                         , ScopedTypeVariables
                         , OverloadedStrings
                         , GADTs
-  -- other-extensions:
-  -- other-modules:
+--  other-extensions:
   build-depends:          base                  >= 4.7.0.2      && < 4.8
                         , containers            >= 0.5.5.1      && < 0.6
                         , QuickCheck            >= 2.7.6        && < 2.8
                         , hspec                 >= 2.1.7        && < 2.2
-  hs-source-dirs:       test src
+                        , make10
+  hs-source-dirs:       test
   default-language:     Haskell2010
   ghc-options:
                         -Wall
-                        -Werror
+--                        -Werror
                         -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
@@ -162,18 +169,17 @@ test-suite make10-spec
                         -fwarn-unused-do-bind
                         -fwarn-wrong-do-bind
                         -fwarn-warnings-deprecations
-                        -fwarn-amp
                         -fwarn-typed-holes
 -- -----------------------------------------------------------------------------
 test-suite make10-doctests
-  main-is:              doctests.hs
   type:                 exitcode-stdio-1.0
+  main-is:              doctests.hs
+--  other-modules:
   default-extensions:     DeriveDataTypeable
                         , ScopedTypeVariables
                         , OverloadedStrings
                         , GADTs
-  -- other-extensions:
-  -- other-modules:
+--  other-extensions:
   build-depends:          base                  >= 4.7.0.2      && < 4.8
                         , containers            >= 0.5.5.1      && < 0.6
                         , QuickCheck            >= 2.7.6        && < 2.8
@@ -181,7 +187,7 @@ test-suite make10-doctests
   hs-source-dirs:       test
   default-language:     Haskell2010
   ghc-options:          -Wall
-                        -Werror
+--                        -Werror
                         -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
@@ -213,5 +219,4 @@ test-suite make10-doctests
                         -fwarn-unused-do-bind
                         -fwarn-wrong-do-bind
                         -fwarn-warnings-deprecations
-                        -fwarn-amp
                         -fwarn-typed-holes

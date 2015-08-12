@@ -31,7 +31,9 @@ module Game.Make10              ( Operator(..)
 -- -----------------------------------------------------------------------------
 import Prelude
 
-import Control.Applicative
+import Control.Applicative      ( (<$>)
+                                )
+
 import Control.Monad            ( replicateM
                                 )
 

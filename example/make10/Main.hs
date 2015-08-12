@@ -25,6 +25,7 @@ import Data.Ratio               ( (%)
 
 import Control.Applicative      ( (<$>)
                                 )
+
 import Control.Arrow            ( Kleisli(..)
                                 , arr
                                 , returnA
