@@ -15,6 +15,15 @@ build-type:             Simple
 -- extra-source-files:
 cabal-version:          >= 1.10
 -- -----------------------------------------------------------------------------
+source-repository head
+  type:     git
+  location: https://github.com/hanepjiv/make10_hs
+-- -----------------------------------------------------------------------------
+--source-repository this
+--  type:     git
+--  location: https://github.com/hanepjiv/make10_hs
+--  tag:      v1.0.0
+-- -----------------------------------------------------------------------------
 library
   exposed-modules:        Game.Make10
                         , Game.Make10.Cell
@@ -27,7 +36,7 @@ library
                         , GADTs
                         , Safe
 --  other-extensions:
-  build-depends:          base                  >= 4.7.0.2      && < 4.8
+  build-depends:          base                  >= 4.8.1.0      && < 4.9
                         , containers            >= 0.5.5.1      && < 0.6
   hs-source-dirs:       src
   default-language:     Haskell2010
@@ -75,8 +84,7 @@ executable make10
                         , GADTs
                         , Safe
 --  other-extensions:
-  build-depends:          base                  >= 4.7.0.2      && < 4.8
-                        , containers            >= 0.5.5.1      && < 0.6
+  build-depends:          base                  >= 4.8.1.0      && < 4.9
                         , make10
   hs-source-dirs:       example/make10
   default-language:     Haskell2010
@@ -128,9 +136,8 @@ test-suite make10-spec
                         , OverloadedStrings
                         , GADTs
 --  other-extensions:
-  build-depends:          base                  >= 4.7.0.2      && < 4.8
-                        , containers            >= 0.5.5.1      && < 0.6
-                        , QuickCheck            >= 2.7.6        && < 2.8
+  build-depends:          base                  >= 4.8.1.0      && < 4.9
+                        , QuickCheck            >= 2.8.1        && < 2.9
                         , hspec                 >= 2.1.7        && < 2.2
                         , make10
   hs-source-dirs:       test
@@ -180,10 +187,9 @@ test-suite make10-doctests
                         , OverloadedStrings
                         , GADTs
 --  other-extensions:
-  build-depends:          base                  >= 4.7.0.2      && < 4.8
-                        , containers            >= 0.5.5.1      && < 0.6
-                        , QuickCheck            >= 2.7.6        && < 2.8
-                        , doctest               >= 0.9.13       && < 0.10
+  build-depends:          base                  >= 4.8.1.0      && < 4.9
+                        , QuickCheck            >= 2.8.1        && < 2.9
+                        , doctest               >= 0.10.1       && < 0.11
   hs-source-dirs:       test
   default-language:     Haskell2010
   ghc-options:          -Wall

@@ -7,7 +7,11 @@
 module Main where
 -- =============================================================================
 -- -----------------------------------------------------------------------------
-import Prelude
+import Prelude          ( IO
+                        , ($)
+                        , flip
+                        , const
+                        )
 
 import Control.Arrow    ( Kleisli(..)
                         , runKleisli
