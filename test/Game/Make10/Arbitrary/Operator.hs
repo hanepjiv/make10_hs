@@ -14,26 +14,36 @@ Portability : portable
 
 make10, 10-puzzle
 -}
-module Game.Make10.Arbitrary.Operator(Operator(..)) where
+module Game.Make10.Arbitrary.Operator   ( Operator(..)
+                                        ) where
 -- =============================================================================
 -- -----------------------------------------------------------------------------
 import Prelude
 
-import Control.Applicative      ( (<$>)
-                                )
+import Control.Applicative              ( (<$>)
+                                        )
 
 import Test.QuickCheck
 
 import qualified Game.Make10
 -- =============================================================================
 -- -----------------------------------------------------------------------------
+{- 0.0 -- ----------------------------------------------------------------------
+-- field
 newtype Operator = Operator { getBase :: Game.Make10.Operator }
-                   deriving (Show)
+                 deriving (Show)
+-- -}
+{- 0.1 -- ----------------------------------------------------------------------
+-- GADTs -}
+newtype Operator where { Operator       :: Game.Make10.Operator
+                                        -> Operator
+                       } deriving ( Show
+                                  )
 -- -----------------------------------------------------------------------------
 instance Arbitrary Operator where
-  arbitrary =  gen <$> arbitrary
+  arbitrary = gen <$> arbitrary
     where
       gen :: Int -> Operator
       gen i = Operator $
               toEnum $ mod (abs i)
-                         (fromEnum (maxBound :: Game.Make10.Operator) + 1)
+                            (fromEnum (maxBound :: Game.Make10.Operator) + 1)

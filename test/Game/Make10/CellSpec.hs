@@ -34,9 +34,9 @@ spec :: Spec
 spec =  --do
   describe "apply" $ do
     it "apply op Atom Atom" $ property $
-      \ m n op ->
-      case apply (getBase op) (Atom (m :: Rational)) (Atom n) of
-        Right x -> x == function (getBase op) m n
+      \ m n (Operator op) ->
+      case apply op (Atom (m :: Rational)) (Atom n) of
+        Right x -> x == function op m n
         _       -> True
     it "apply op Triple Atom" $ property $
       \ m n o ->
