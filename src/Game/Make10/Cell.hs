@@ -240,7 +240,7 @@ rightSafe  x_                                = x_
 -- | invertSafe
 --
 invertSafe :: forall a. Cell a -> Cell a
-invertSafe    (Triple op_ l_ r_@(Triple {}))     =
+invertSafe    (Triple op_ l_ r_@Triple{})        =
   Triple (Op.invert op_) l_ $ swapUnsafe r_
 invertSafe x_                                    = x_
 -- -----------------------------------------------------------------------------
@@ -263,11 +263,11 @@ invertSafe x_                                    = x_
 optimize :: forall a.
             (Show a, Ord a, Fractional a) =>
             Cell a -> Cell a
-optimize    x@(Atom {})         =  x
+optimize    x@Atom{}            =  x
 optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
   where
     -- -------------------------------------------------------------------------
-    opt            x_@(Atom {})                      = x_
+    opt            x_@Atom{}                         = x_
     opt            x_@(Triple Op.ADD  _ _)           = opt_ADD $ opt_rankSwap x_
     opt            x_@(Triple Op.SUB  _ _)           = opt_SUB x_
     opt            x_@(Triple Op.RSUB _ _)           = opt $ swap x_
