@@ -1,7 +1,8 @@
 language: haskell
 sudo: false
 cache:
-  directories:
+  - apt
+  - directories:
     - ${HOME}/.local
     - ${HOME}/.stack
     - ${TRAVIS_BUILD_DIR}/.stack-work
