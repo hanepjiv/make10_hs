@@ -1,0 +1,15 @@
+sudo: false
+cache:
+  directories:
+    - ${HOME}/.local
+    - ${HOME}/.stack
+    - .stack-work
+before_install:
+  - |
+    mkdir -p ${HOME}/.local/bin
+    export PATH=${HOME}/.local/bin:${PATH}
+    travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ${HOME}/.local/bin '*/stack'
+script:
+  - |
+    stack setup
+    stack build --test
