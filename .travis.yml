@@ -4,7 +4,7 @@ cache:
   directories:
     - ${HOME}/.local
     - ${HOME}/.stack
-    - .stack-work
+    - ${TRAVIS_BUILD_DIR}/.stack-work
 before_install:
   - |
     mkdir -p ${HOME}/.local/bin
