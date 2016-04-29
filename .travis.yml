@@ -10,4 +10,4 @@ before_install:
     export PATH=${HOME}/.local/bin:${PATH}
     travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ${HOME}/.local/bin '*/stack'
 script:
-  - stack --silent --no-terminal setup && stack --silent --no-terminal build --test
+  - stack --no-terminal setup  2>&1 1>/dev/null && stack --no-terminal build --test
