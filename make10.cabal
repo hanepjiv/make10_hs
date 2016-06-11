@@ -184,7 +184,7 @@ test-suite make10-doctests
 --  other-extensions:
   build-depends:          base                  >= 4.8.1.0      && < 4.9
                         , QuickCheck            >= 2.8.1        && < 2.9
-                        , doctest               >= 0.10.1       && < 0.11
+                        , doctest               >= 0.11.0       && < 0.12
   hs-source-dirs:       test
   default-language:     Haskell2010
   ghc-options:          -Wall
