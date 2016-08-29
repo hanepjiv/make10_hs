@@ -132,8 +132,8 @@ test-suite make10-spec
                         , GADTs
 --  other-extensions:
   build-depends:          base                  >= 4.8.2.0      && < 4.9
-                        , QuickCheck            >= 2.8.1        && < 2.9
-                        , hspec                 >= 2.2.2        && < 2.3
+                        , QuickCheck            >= 2.8.2        && < 2.9
+                        , hspec                 >= 2.2.3        && < 2.3
                         , make10
   hs-source-dirs:       test
   default-language:     Haskell2010
@@ -182,8 +182,8 @@ test-suite make10-doctests
                         , OverloadedStrings
                         , GADTs
 --  other-extensions:
-  build-depends:          base                  >= 4.8.1.0      && < 4.9
-                        , QuickCheck            >= 2.8.1        && < 2.9
+  build-depends:          base                  >= 4.8.2.0      && < 4.9
+                        , QuickCheck            >= 2.8.2        && < 2.9
                         , doctest               >= 0.11.0       && < 0.12
   hs-source-dirs:       test
   default-language:     Haskell2010
