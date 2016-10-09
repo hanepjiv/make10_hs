@@ -14,11 +14,11 @@ category:               Game
 build-type:             Simple
 -- extra-source-files:
 cabal-version:          >= 1.10
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 source-repository       head
   type:                 git
   location:             https://github.com/hanepjiv/make10_hs
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 library
   exposed-modules:        Game.Make10
                         , Game.Make10.Cell
@@ -31,16 +31,16 @@ library
                         , GADTs
                         , Safe
 --  other-extensions:
-  build-depends:          base                  >= 4.8.2.0      && < 4.9
+  build-depends:          base                  >= 4.9.0.0      && < 4.10
                         , containers            >= 0.5.6.2      && < 0.6
   hs-source-dirs:       src
   default-language:     Haskell2010
   ghc-options:          -Wall
---                        -Werror
+                        -Werror
+                        -Wredundant-constraints
                         -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
-                        -fwarn-duplicate-constraints
                         -fwarn-duplicate-exports
                         -fwarn-hi-shadowing
                         -fwarn-identities
@@ -49,14 +49,13 @@ library
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
                         -fwarn-missing-fields
---                        -fwarn-missing-import-lists
+--                      -fwarn-missing-import-lists
                         -fwarn-missing-methods
                         -fwarn-missing-signatures
-                        -fwarn-missing-local-sigs
+                        -fwarn-missing-local-signatures
                         -fwarn-monomorphism-restriction
                         -fwarn-name-shadowing
                         -fwarn-orphans
-                        -fwarn-auto-orphans
                         -fwarn-overlapping-patterns
                         -fwarn-tabs
                         -fwarn-type-defaults
@@ -69,7 +68,7 @@ library
                         -fwarn-wrong-do-bind
                         -fwarn-warnings-deprecations
                         -fwarn-typed-holes
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 executable make10
   main-is:              Main.hs
 --  other-modules:
@@ -79,16 +78,16 @@ executable make10
                         , GADTs
                         , Safe
 --  other-extensions:
-  build-depends:          base                  >= 4.8.2.0      && < 4.9
+  build-depends:          base                  >= 4.9.0.0      && < 4.10
                         , make10
   hs-source-dirs:       example/make10
   default-language:     Haskell2010
   ghc-options:          -Wall
---                        -Werror
+                        -Werror
+                        -Wredundant-constraints
                         -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
-                        -fwarn-duplicate-constraints
                         -fwarn-duplicate-exports
                         -fwarn-hi-shadowing
                         -fwarn-identities
@@ -97,14 +96,13 @@ executable make10
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
                         -fwarn-missing-fields
---                        -fwarn-missing-import-lists
+--                      -fwarn-missing-import-lists
                         -fwarn-missing-methods
                         -fwarn-missing-signatures
-                        -fwarn-missing-local-sigs
+                        -fwarn-missing-local-signatures
                         -fwarn-monomorphism-restriction
                         -fwarn-name-shadowing
                         -fwarn-orphans
-                        -fwarn-auto-orphans
                         -fwarn-overlapping-patterns
                         -fwarn-tabs
                         -fwarn-type-defaults
@@ -117,7 +115,7 @@ executable make10
                         -fwarn-wrong-do-bind
                         -fwarn-warnings-deprecations
                         -fwarn-typed-holes
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 test-suite make10-spec
   type:                 exitcode-stdio-1.0
   main-is:              Spec.hs
@@ -131,19 +129,18 @@ test-suite make10-spec
                         , OverloadedStrings
                         , GADTs
 --  other-extensions:
-  build-depends:          base                  >= 4.8.2.0      && < 4.9
+  build-depends:          base                  >= 4.9.0.0      && < 4.10
                         , QuickCheck            >= 2.8.1        && < 2.9
                         , hspec                 >= 2.2.2        && < 2.3
                         , make10
   hs-source-dirs:       test
   default-language:     Haskell2010
-  ghc-options:
-                        -Wall
---                        -Werror
+  ghc-options:          -Wall
+                        -Werror
+                        -Wredundant-constraints
                         -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
-                        -fwarn-duplicate-constraints
                         -fwarn-duplicate-exports
                         -fwarn-hi-shadowing
                         -fwarn-identities
@@ -152,19 +149,18 @@ test-suite make10-spec
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
                         -fwarn-missing-fields
---                        -fwarn-missing-import-lists
+--                      -fwarn-missing-import-lists
                         -fwarn-missing-methods
                         -fwarn-missing-signatures
-                        -fwarn-missing-local-sigs
+                        -fwarn-missing-local-signatures
                         -fwarn-monomorphism-restriction
                         -fwarn-name-shadowing
                         -fwarn-orphans
-                        -fwarn-auto-orphans
                         -fwarn-overlapping-patterns
                         -fwarn-tabs
                         -fwarn-type-defaults
                         -fwarn-unrecognised-pragmas
---                        -fwarn-unsafe
+--                      -fwarn-unsafe
                         -fwarn-unused-binds
                         -fwarn-unused-imports
                         -fwarn-unused-matches
@@ -172,7 +168,7 @@ test-suite make10-spec
                         -fwarn-wrong-do-bind
                         -fwarn-warnings-deprecations
                         -fwarn-typed-holes
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 test-suite make10-doctests
   type:                 exitcode-stdio-1.0
   main-is:              doctests.hs
@@ -182,17 +178,17 @@ test-suite make10-doctests
                         , OverloadedStrings
                         , GADTs
 --  other-extensions:
-  build-depends:          base                  >= 4.8.1.0      && < 4.9
+  build-depends:          base                  >= 4.9.0.0      && < 4.10
                         , QuickCheck            >= 2.8.1        && < 2.9
-                        , doctest               >= 0.10.1       && < 0.11
+                        , doctest               >= 0.11.0       && < 0.12
   hs-source-dirs:       test
   default-language:     Haskell2010
   ghc-options:          -Wall
---                        -Werror
+                        -Werror
+                        -Wredundant-constraints
                         -fdefer-type-errors
                         -fhelpful-errors
                         -fwarn-deprecated-flags
-                        -fwarn-duplicate-constraints
                         -fwarn-duplicate-exports
                         -fwarn-hi-shadowing
                         -fwarn-identities
@@ -201,19 +197,18 @@ test-suite make10-doctests
                         -fwarn-incomplete-uni-patterns
                         -fwarn-incomplete-record-updates
                         -fwarn-missing-fields
---                        -fwarn-missing-import-lists
+--                      -fwarn-missing-import-lists
                         -fwarn-missing-methods
                         -fwarn-missing-signatures
-                        -fwarn-missing-local-sigs
+                        -fwarn-missing-local-signatures
                         -fwarn-monomorphism-restriction
                         -fwarn-name-shadowing
                         -fwarn-orphans
-                        -fwarn-auto-orphans
                         -fwarn-overlapping-patterns
                         -fwarn-tabs
                         -fwarn-type-defaults
                         -fwarn-unrecognised-pragmas
---                        -fwarn-unsafe
+--                      -fwarn-unsafe
                         -fwarn-unused-binds
                         -fwarn-unused-imports
                         -fwarn-unused-matches
