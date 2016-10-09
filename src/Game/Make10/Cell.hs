@@ -3,8 +3,8 @@
                 , GADTs
                 , Safe
                 #-}
--- =============================================================================
--- -----------------------------------------------------------------------------
+-- ============================================================================
+-- ----------------------------------------------------------------------------
 {-|
 Module      : Game.Make10.Cell
 Description : puzzle game
@@ -23,8 +23,8 @@ module Game.Make10.Cell         ( Cell(..)
                                 , optimize
                                 , expand
                                 ) where
--- =============================================================================
--- -----------------------------------------------------------------------------
+-- ============================================================================
+-- ----------------------------------------------------------------------------
 import Prelude
 
 import Control.Applicative      ( (<$>)
@@ -33,18 +33,18 @@ import Control.Applicative      ( (<$>)
 
 import qualified Game.Make10.Operator as Op
 import qualified Game.Make10.Expand as Exp
--- =============================================================================
--- -----------------------------------------------------------------------------
+-- ============================================================================
+-- ----------------------------------------------------------------------------
 
 -- $setup
 -- >>> :set -XOverloadedStrings
 -- >>> import Data.Ratio((%), Ratio, Rational)
 
--- =============================================================================
--- -----------------------------------------------------------------------------
+-- ============================================================================
+-- ----------------------------------------------------------------------------
 -- data CellTagAtom
 -- data CellTagTriple
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | Cell
 --
 -- >>> Atom (1 % 1)
@@ -62,13 +62,13 @@ import qualified Game.Make10.Expand as Exp
 data Cell a where
     Atom   :: a -> Cell a
     Triple :: !Op.Operator -> Cell a -> Cell a -> Cell a
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 instance (Show a) => Show (Cell a) where
     showsPrec d (Atom x)        = showsPrec (succ d) x
     showsPrec d (Triple o l r)  =
       showParen (d > 0) $
       showsPrec (succ d) l . showsPrec (succ d) o . showsPrec (succ d) r
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | setOp
 --
 -- >>> setOp Op.MUL (Triple Op.ADD (Atom (1 % 1)) (Atom (2 % 1)))
@@ -80,7 +80,7 @@ instance (Show a) => Show (Cell a) where
 setOp :: Op.Operator    -> Cell a       -> Cell a
 setOp    op             (Triple _ l r)   = Triple op l r
 setOp    _              _                = error "Game.Make10.Cell.setOp"
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | setRightOp
 --
 -- >>> :{
@@ -97,7 +97,7 @@ setOp    _              _                = error "Game.Make10.Cell.setOp"
 setRightOp :: Op.Operator -> Cell a       -> Cell a
 setRightOp    rop         (Triple op l r)  = Triple op l $ setOp rop r
 setRightOp    _           _                = error "Game.Make10.Cell.setRightOp"
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | apply
 --
 -- >>> apply Op.ADD (Atom (1 % 1)) (Atom 2)
@@ -144,7 +144,7 @@ apply op@Op.DIV  l r =
                     then Left $ "ERROR!: apply: zero divide: " ++ show r
                     else Op.function op <$> eval l <*> r_
 apply op l r = Op.function op <$> eval l <*> eval r
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | eval
 --
 eval :: forall a.
@@ -152,7 +152,7 @@ eval :: forall a.
         Cell a -> Either String a
 eval    (Atom x)        =  Right x
 eval    (Triple op l r) =  apply op l r
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | hasZeroDiv
 --
 hasZeroDiv :: forall a.
@@ -162,14 +162,14 @@ hasZeroDiv (Triple Op.DIV  _        (Atom 0))   = True
 hasZeroDiv (Triple Op.RDIV (Atom 0) _)          = True
 hasZeroDiv (Triple _       l        r)          = hasZeroDiv l || hasZeroDiv r
 hasZeroDiv _                                    = False
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | rank
 --
 rank :: (Fractional a) =>
         Cell a          -> a
 rank    (Atom x)        =  x
 rank    (Triple _ l r)  =  10 + (rank l + rank r)
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | swap
 --
 -- >>> swap $ Triple Op.ADD (Atom (1 % 1)) (Atom (2 % 1))
@@ -181,7 +181,7 @@ rank    (Triple _ l r)  =  10 + (rank l + rank r)
 swap ::         Cell a          -> Cell a
 swap            (Triple op l r) =  Triple (Op.swap op) r l
 swap            _               =  error "Game.Make10.Cell.swap"
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | swapUnsafe
 --
 -- >>> swapUnsafe $ Triple Op.ADD (Atom (1 % 1)) (Atom (2 % 1))
@@ -193,7 +193,7 @@ swap            _               =  error "Game.Make10.Cell.swap"
 swapUnsafe ::   Cell a          -> Cell a
 swapUnsafe      (Triple op l r) =  Triple op r l
 swapUnsafe      _               =  error "Game.Make10.Cell.swapUnsafe"
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 {-
 -- UNUSED
 -- | leftUnsafe
@@ -213,7 +213,7 @@ leftUnsafe    (Triple op l (Triple rop rl rr))  =
   Triple rop (Triple op l rl) rr
 leftUnsafe    _ =  error "Game.Make10.Cell.leftUnsafe"
 -- -}
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | rightUnsafe
 --
 -- >>> :{
@@ -229,21 +229,21 @@ leftUnsafe    _ =  error "Game.Make10.Cell.leftUnsafe"
 rightUnsafe :: Cell a                        -> Cell a
 rightUnsafe (Triple op (Triple lop ll lr) r)  = Triple lop ll (Triple op lr r)
 rightUnsafe _ =  error "Game.Make10.Cell.rightUnsafe"
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | rightSafe
 --
 rightSafe :: forall a. Cell a -> Cell a
 rightSafe  x_@(Triple _ (Triple rop_ _ _) _) =
   setRightOp (Op.invert rop_) $ rightUnsafe x_
 rightSafe  x_                                = x_
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | invertSafe
 --
 invertSafe :: forall a. Cell a -> Cell a
 invertSafe    (Triple op_ l_ r_@Triple{})        =
   Triple (Op.invert op_) l_ $ swapUnsafe r_
 invertSafe x_                                    = x_
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | optimize
 --
 -- >>> optimize $ Triple Op.RSUB (Atom (1 % 1)) (Atom (2 % 1))
@@ -260,38 +260,47 @@ invertSafe x_                                    = x_
 -- :}
 -- 9 % 1 + (3 % 1 * (3 % 1 / 9 % 1))
 --
-optimize :: forall a.
-            (Show a, Ord a, Fractional a) =>
-            Cell a -> Cell a
+optimize :: forall a0. (Show a0, Ord a0, Fractional a0) => Cell a0 -> Cell a0
 optimize    x@Atom{}            =  x
 optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
   where
-    -- -------------------------------------------------------------------------
-    opt            x_@Atom{}                         = x_
-    opt            x_@(Triple Op.ADD  _ _)           = opt_ADD $ opt_rankSwap x_
-    opt            x_@(Triple Op.SUB  _ _)           = opt_SUB x_
-    opt            x_@(Triple Op.RSUB _ _)           = opt $ swap x_
-    opt            x_@(Triple Op.MUL  _ _)           = opt_MUL $ opt_rankSwap x_
-    opt            x_@(Triple Op.DIV  _ _)           = opt_DIV x_
-    opt            x_@(Triple Op.RDIV _ _)           = opt $ swap x_
-    -- -------------------------------------------------------------------------
+    -- ------------------------------------------------------------------------
+    opt :: forall a1. (Show a1, Ord a1, Fractional a1) => Cell a1 -> Cell a1
+    opt            x_@Atom{}                    = x_
+    opt            x_@(Triple Op.ADD  _ _)      = opt_ADD $ opt_rankSwap x_
+    opt            x_@(Triple Op.SUB  _ _)      = opt_SUB x_
+    opt            x_@(Triple Op.RSUB _ _)      = opt $ swap x_
+    opt            x_@(Triple Op.MUL  _ _)      = opt_MUL $ opt_rankSwap x_
+    opt            x_@(Triple Op.DIV  _ _)      = opt_DIV x_
+    opt            x_@(Triple Op.RDIV _ _)      = opt $ swap x_
+    -- ------------------------------------------------------------------------
+    opt_rankSwap :: forall a1. (Show a1, Ord a1, Fractional a1) =>
+                    Cell a1 -> Cell a1
     opt_rankSwap   x_@(Triple _ l_ r_)
-      | rank l_ > rank r_                            = opt $ swapUnsafe x_
-      | otherwise                                    = x_
-    opt_rankSwap   x_                                = x_
-    -- -------------------------------------------------------------------------
+      | rank l_ > rank r_                       = opt $ swapUnsafe x_
+      | otherwise                               = x_
+    opt_rankSwap   x_                           = x_
+    -- ------------------------------------------------------------------------
+    opt_ADD :: forall a1. (Show a1, Ord a1, Fractional a1) =>
+               Cell a1 -> Cell a1
     opt_ADD x_@(Triple Op.ADD (Triple Op.ADD _ _) _) = optimize $ rightUnsafe x_
     opt_ADD x_@(Triple Op.ADD _ (Triple Op.ADD _ _)) = opt_change x_
     opt_ADD x_                                       = x_
-    -- -------------------------------------------------------------------------
+    -- ------------------------------------------------------------------------
+    opt_SUB :: forall a1. (Show a1, Ord a1, Fractional a1) =>
+               Cell a1 -> Cell a1
     opt_SUB x_@(Triple Op.SUB (Triple Op.SUB _ _) _) = optimize $ rightSafe x_
     opt_SUB x_@(Triple Op.SUB _ (Triple Op.SUB _ _)) = optimize $ invertSafe x_
     opt_SUB x_                                       = x_
-    -- -------------------------------------------------------------------------
+    -- ------------------------------------------------------------------------
+    opt_MUL :: forall a1. (Show a1, Ord a1, Fractional a1) =>
+               Cell a1 -> Cell a1
     opt_MUL x_@(Triple Op.MUL (Triple Op.MUL _ _) _) = optimize $ rightUnsafe x_
     opt_MUL x_@(Triple Op.MUL _ (Triple Op.MUL _ _)) = opt_change x_
     opt_MUL x_                                       = x_
-    -- -------------------------------------------------------------------------
+    -- ------------------------------------------------------------------------
+    opt_DIV :: forall a1. (Show a1, Ord a1, Fractional a1) =>
+               Cell a1 -> Cell a1
     opt_DIV x_@(Triple Op.DIV (Triple Op.DIV _ _) _) = optimize $ rightSafe x_
     opt_DIV x_@(Triple Op.DIV _ (Triple Op.DIV _ _)) = optimize $ invertSafe x_
 {-
@@ -303,12 +312,14 @@ optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
         _       -> x_
 -}
     opt_DIV        x_                                = x_
-    -- -------------------------------------------------------------------------
+    -- ------------------------------------------------------------------------
+    opt_change :: forall a1. (Show a1, Ord a1, Fractional a1) =>
+                  Cell a1 -> Cell a1
     opt_change     x_@(Triple op_ l_ (Triple rop_ rl_ rr_))
       | rank l_ > rank rl_ = Triple op_ rl_ $ opt $ Triple rop_ l_ rr_
       | otherwise                                    = x_
     opt_change     x_                                = x_
--- -----------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
 -- | expand
 --
 -- >>> expand $ (Atom $ 1 % 1)
