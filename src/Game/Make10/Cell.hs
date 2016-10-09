@@ -76,6 +76,7 @@ instance (Show a) => Show (Cell a) where
 --
 -- >>> setOp Op.ADD (Atom (1 % 1))
 -- *** Exception: Game.Make10.Cell.setOp
+-- ...
 --
 setOp :: Op.Operator    -> Cell a       -> Cell a
 setOp    op             (Triple _ l r)   = Triple op l r
@@ -93,6 +94,7 @@ setOp    _              _                = error "Game.Make10.Cell.setOp"
 --
 -- >>> setRightOp Op.ADD (Atom (1 % 1))
 -- *** Exception: Game.Make10.Cell.setRightOp
+-- ...
 --
 setRightOp :: Op.Operator -> Cell a       -> Cell a
 setRightOp    rop         (Triple op l r)  = Triple op l $ setOp rop r
@@ -177,6 +179,7 @@ rank    (Triple _ l r)  =  10 + (rank l + rank r)
 --
 -- >>> swap $ Atom (1 % 1)
 -- *** Exception: Game.Make10.Cell.swap
+-- ...
 --
 swap ::         Cell a          -> Cell a
 swap            (Triple op l r) =  Triple (Op.swap op) r l
@@ -189,6 +192,7 @@ swap            _               =  error "Game.Make10.Cell.swap"
 --
 -- >>> swapUnsafe $ Atom (1 % 1)
 -- *** Exception: Game.Make10.Cell.swapUnsafe
+-- ...
 --
 swapUnsafe ::   Cell a          -> Cell a
 swapUnsafe      (Triple op l r) =  Triple op r l
@@ -207,6 +211,7 @@ swapUnsafe      _               =  error "Game.Make10.Cell.swapUnsafe"
 --
 -- >>> leftUnsafe $ Atom (1 % 1)
 -- *** Exception: Game.Make10.Cell.leftUnsafe
+-- ...
 --
 leftUnsafe :: Cell a                           -> Cell a
 leftUnsafe    (Triple op l (Triple rop rl rr))  =
@@ -225,6 +230,7 @@ leftUnsafe    _ =  error "Game.Make10.Cell.leftUnsafe"
 --
 -- >>> rightUnsafe $ Atom (1 % 1)
 -- *** Exception: Game.Make10.Cell.rightUnsafe
+-- ...
 --
 rightUnsafe :: Cell a                        -> Cell a
 rightUnsafe (Triple op (Triple lop ll lr) r)  = Triple lop ll (Triple op lr r)
