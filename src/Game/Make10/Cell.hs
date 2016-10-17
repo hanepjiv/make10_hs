@@ -97,8 +97,8 @@ setOp    _              _                = error "Game.Make10.Cell.setOp"
 -- ...
 --
 setRightOp :: Op.Operator -> Cell a       -> Cell a
-setRightOp    rop         (Triple op l r)  = Triple op l $ setOp rop r
-setRightOp    _           _                = error "Game.Make10.Cell.setRightOp"
+setRightOp    rop         (Triple op l r) = Triple op l $ setOp rop r
+setRightOp    _           _               = error "Game.Make10.Cell.setRightOp"
 -- ----------------------------------------------------------------------------
 -- | apply
 --
@@ -289,7 +289,8 @@ optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
     -- ------------------------------------------------------------------------
     opt_ADD :: forall a1. (Show a1, Ord a1, Fractional a1) =>
                Cell a1 -> Cell a1
-    opt_ADD x_@(Triple Op.ADD (Triple Op.ADD _ _) _) = optimize $ rightUnsafe x_
+    opt_ADD x_@(Triple Op.ADD (Triple Op.ADD _ _) _) =
+        optimize $ rightUnsafe x_
     opt_ADD x_@(Triple Op.ADD _ (Triple Op.ADD _ _)) = opt_change x_
     opt_ADD x_                                       = x_
     -- ------------------------------------------------------------------------
@@ -301,7 +302,8 @@ optimize    (Triple op l r)     =  opt (Triple op (optimize l) (optimize r))
     -- ------------------------------------------------------------------------
     opt_MUL :: forall a1. (Show a1, Ord a1, Fractional a1) =>
                Cell a1 -> Cell a1
-    opt_MUL x_@(Triple Op.MUL (Triple Op.MUL _ _) _) = optimize $ rightUnsafe x_
+    opt_MUL x_@(Triple Op.MUL (Triple Op.MUL _ _) _) =
+        optimize $ rightUnsafe x_
     opt_MUL x_@(Triple Op.MUL _ (Triple Op.MUL _ _)) = opt_change x_
     opt_MUL x_                                       = x_
     -- ------------------------------------------------------------------------
