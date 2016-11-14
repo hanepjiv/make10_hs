@@ -20,19 +20,19 @@ source-repository       head
   location:             https://github.com/hanepjiv/make10_hs
 -- ----------------------------------------------------------------------------
 library
-  exposed-modules:        Game.Make10
-                          , Game.Make10.Cell
-                          , Game.Make10.Expand
-                          , Game.Make10.Operator
+  exposed-modules:      Game.Make10,
+                        Game.Make10.Cell,
+                        Game.Make10.Expand,
+                        Game.Make10.Operator
 --  other-modules:
-  default-extensions:     DeriveDataTypeable
-                          , ScopedTypeVariables
-                          , OverloadedStrings
-                          , GADTs
-                          , Safe
+  default-extensions:   DeriveDataTypeable,
+                        ScopedTypeVariables,
+                        OverloadedStrings,
+                        GADTs,
+                        Safe
 --  other-extensions:
-  build-depends:          base                  >= 4.9.0.0      && < 4.10
-                          , containers          >= 0.5.7.1      && < 0.6
+  build-depends:        base                    >= 4.9.0.0      && < 4.10,
+                        containers              >= 0.5.7.1      && < 0.6
   hs-source-dirs:       src
   default-language:     Haskell2010
   ghc-options:          -Wall
@@ -72,14 +72,14 @@ library
 executable make10
   main-is:              Main.hs
 --  other-modules:
-  default-extensions:     DeriveDataTypeable
-                          , ScopedTypeVariables
-                          , OverloadedStrings
-                          , GADTs
-                          , Safe
+  default-extensions:   DeriveDataTypeable,
+                        ScopedTypeVariables,
+                        OverloadedStrings,
+                        GADTs,
+                        Safe
 --  other-extensions:
-  build-depends:          base                  >= 4.9.0.0      && < 4.10
-                          , make10
+  build-depends:        base                    >= 4.9.0.0      && < 4.10,
+                        make10
   hs-source-dirs:       example/make10
   default-language:     Haskell2010
   ghc-options:          -Wall
@@ -119,20 +119,20 @@ executable make10
 test-suite make10-spec
   type:                 exitcode-stdio-1.0
   main-is:              Spec.hs
-  other-modules:          Game.Make10.Arbitrary.Operator
-                          , Game.Make10.CellSpec
-                          , Game.Make10.ExpandSpec
-                          , Game.Make10.OperatorSpec
-                          , Game.Make10Spec
-  default-extensions:     DeriveDataTypeable
-                          , ScopedTypeVariables
-                          , OverloadedStrings
-                          , GADTs
+  other-modules:        Game.Make10.Arbitrary.Operator,
+                        Game.Make10.CellSpec,
+                        Game.Make10.ExpandSpec,
+                        Game.Make10.OperatorSpec,
+                        Game.Make10Spec
+  default-extensions:   DeriveDataTypeable,
+                        ScopedTypeVariables,
+                        OverloadedStrings,
+                        GADTs
 --  other-extensions:
-  build-depends:          base                  >= 4.9.0.0      && < 4.10
-                          , QuickCheck          >= 2.8.1        && < 2.9
-                          , hspec                       >= 2.2.2        && < 2.3
-                          , make10
+  build-depends:        base                    >= 4.9.0.0      && < 4.10,
+                        QuickCheck              >= 2.8.2        && < 2.9,
+                        hspec                   >= 2.2.4        && < 2.3,
+                        make10
   hs-source-dirs:       test
   default-language:     Haskell2010
   ghc-options:          -Wall
@@ -173,14 +173,14 @@ test-suite make10-doctests
   type:                 exitcode-stdio-1.0
   main-is:              doctests.hs
 --  other-modules:
-  default-extensions:     DeriveDataTypeable
-                          , ScopedTypeVariables
-                          , OverloadedStrings
-                          , GADTs
+  default-extensions:   DeriveDataTypeable,
+                        ScopedTypeVariables,
+                        OverloadedStrings,
+                        GADTs
 --  other-extensions:
-  build-depends:          base                  >= 4.9.0.0      && < 4.10
-                          , QuickCheck          >= 2.8.1        && < 2.9
-                          , doctest             >= 0.11.0       && < 0.12
+  build-depends:        base                    >= 4.9.0.0      && < 4.10,
+                        QuickCheck              >= 2.8.1        && < 2.9,
+                        doctest                 >= 0.11.0       && < 0.12
   hs-source-dirs:       test
   default-language:     Haskell2010
   ghc-options:          -Wall
