@@ -31,8 +31,8 @@ library
                         GADTs,
                         Safe
 --  other-extensions:
-  build-depends:        base                    >= 4.9.0.0      && < 4.10,
-                        containers              >= 0.5.7.1      && < 0.6
+  build-depends:        base                    >= 4.9.0.0      && < 5,
+                        containers
   hs-source-dirs:       src
   default-language:     Haskell2010
   ghc-options:          -Wall
@@ -78,11 +78,12 @@ executable make10
                         GADTs,
                         Safe
 --  other-extensions:
-  build-depends:        base                    >= 4.9.0.0      && < 4.10,
+  build-depends:        base,
                         make10
   hs-source-dirs:       example/make10
   default-language:     Haskell2010
-  ghc-options:          -Wall
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+                        -Wall
                         -Werror
                         -Wredundant-constraints
                         -fdefer-type-errors
@@ -129,13 +130,14 @@ test-suite make10-spec
                         OverloadedStrings,
                         GADTs
 --  other-extensions:
-  build-depends:        base                    >= 4.9.0.0      && < 4.10,
-                        QuickCheck              >= 2.8.2        && < 2.9,
-                        hspec                   >= 2.2.4        && < 2.3,
+  build-depends:        base,
+                        QuickCheck,
+                        hspec,
                         make10
   hs-source-dirs:       test
   default-language:     Haskell2010
-  ghc-options:          -Wall
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+                        -Wall
                         -Werror
                         -Wredundant-constraints
                         -fdefer-type-errors
@@ -178,12 +180,13 @@ test-suite make10-doctests
                         OverloadedStrings,
                         GADTs
 --  other-extensions:
-  build-depends:        base                    >= 4.9.0.0      && < 4.10,
-                        QuickCheck              >= 2.8.1        && < 2.9,
-                        doctest                 >= 0.11.0       && < 0.12
+  build-depends:        base,
+                        QuickCheck,
+                        doctest
   hs-source-dirs:       test
   default-language:     Haskell2010
-  ghc-options:          -Wall
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+                        -Wall
                         -Werror
                         -Wredundant-constraints
                         -fdefer-type-errors

@@ -3,7 +3,14 @@
 :set +s
 :set +t
 
-:set -DeriveDataTypeable -ScopedTypeVariables -OverloadedStrings -GADTs
+:set -XDeriveDataTypeable
+:set -XScopedTypeVariables
+:set -XOverloadedStrings
+:set -XGADTs
+-- :set -XSafe
+:set -XArrows
+:set -XTemplateHaskell
+:set -XQuasiQuotes
 
 :module + Control.Applicative Control.Arrow
 
