@@ -1,17 +1,21 @@
 language: haskell
 sudo: false
 cache:
-  - apt
-  - directories:
-    - ${HOME}/.local
-    - ${HOME}/.stack
-    - ${TRAVIS_BUILD_DIR}/.stack-work
+- apt
+- directories:
+  - "${HOME}/.local"
+  - "${HOME}/.stack"
+  - "${TRAVIS_BUILD_DIR}/.stack-work"
 before_install:
-  - |
-    mkdir -p ${HOME}/.local/bin
-    export PATH=${HOME}/.local/bin:${PATH}
-    travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ${HOME}/.local/bin '*/stack'
+- |
+  mkdir -p ${HOME}/.local/bin
+  export PATH=${HOME}/.local/bin:${PATH}
+  travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ${HOME}/.local/bin '*/stack'
 install:
-  - stack --no-terminal setup
+- stack --no-terminal setup
 script:
-  - stack --no-terminal build --test
+- stack --no-terminal build --test
+notifications:
+  slack:
+    rooms:
+      secure: nBBFtJ3ZaoEU9NW07S9IQk75lpy5IEJKfv71xhYeb3GVa9CSbZna/TdcGw0LgGyAR1LgqOLamFb5rlImi8DA19yDVdfJBtwsoIuYooyPIxfrA2oBI0APjvikoX1wXau4oLzUaR/4zClWmwktQ5pTs532uSyxnPDv2o8l7wHgZ0j2pGd4eBxDNihADFObZ5bDYChOMFRKhUFhkGOnbFKZGHh/39S2y5pjuXduyrTRQLF3f0cOcdU5eQRvAasZB6cajEwyJrNYounKlbxVUxxBFDGn0RNnhLITCZ7eGE3yY8Z05T3m8rRYamjscP3RULEuMS2XG+ZTbL2kNNqVrijjPUpnfAFCEcm0nJXEbgCX15VMe3XF2TfqAkLaXDtwMhu0Wv5aWY6By4jGC7VGSDes4GT7uEutH0t/8eD5Z3GsXCptVZxiJq3+asRl3wTMNDtoRH01SWu0GsaMtRz5OyAXObJz5ZDRdRfElacqqO5C4PsaEkZnqtVl/XR4JafwEjo8YADN9kpvH0ptrKiagKzJqBy/8PNxirD4Uxp0U+uBwWkhFzvjui9SMKTk8evfxIpSvd5DWAatvBMr7N/1ccTz+uusuXeVp0YFWfziz6W0VM4jUtLxJs704vBjA5g22GWW65/eL+/b+N599ReF9qikGGNy2BmGrOmwR0GZBUz8irg=
