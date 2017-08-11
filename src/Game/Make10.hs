@@ -63,8 +63,8 @@ make_M_4_Triple ns os =
   where
     -- ------------------------------------------------------------------------
     gen :: forall t a0 a1.
-             (a0 -> a0 -> a0 -> a0 -> a1 -> a1 -> a1 -> t)
-             -> [a0] -> [a1] -> [Integer] -> t
+           (a0 -> a0 -> a0 -> a0 -> a1 -> a1 -> a1 -> t)
+               -> [a0] -> [a1] -> [Integer] -> t
     gen make_ n_ o_ i_ = make_
                          (n_ !! fromInteger (head i_))
                          (n_ !! fromInteger (i_ !! 1))
@@ -76,13 +76,13 @@ make_M_4_Triple ns os =
     -- ------------------------------------------------------------------------
     make_M_4_Triple_A :: forall a0.
                          a0 -> a0 -> a0 -> a0
-                           -> Operator -> Operator -> Operator -> Cell a0
+                            -> Operator -> Operator -> Operator -> Cell a0
     make_M_4_Triple_A n0 n1 n2 n3 o0 o1 o2 =
       Triple o2 (Triple o1 (Triple o0 (Atom n3) (Atom n2)) (Atom n1)) (Atom n0)
     -- ------------------------------------------------------------------------
     make_M_4_Triple_B :: forall a0.
                          a0 -> a0 -> a0 -> a0
-                           -> Operator -> Operator -> Operator -> Cell a0
+                            -> Operator -> Operator -> Operator -> Cell a0
     make_M_4_Triple_B n0 n1 n2 n3 o0 o1 o2 =
       Triple o2 (Triple o1 (Atom n3) (Atom n2)) (Triple o0 (Atom n1) (Atom n0))
     -- ------------------------------------------------------------------------
