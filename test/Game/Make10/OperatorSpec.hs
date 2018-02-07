@@ -22,7 +22,8 @@ module Game.Make10.OperatorSpec ( spec
 import Prelude
 
 import Test.Hspec
-import Test.QuickCheck
+import Test.QuickCheck hiding   ( function
+                                )
 
 import Game.Make10
 -- ============================================================================

@@ -22,10 +22,10 @@ module Game.Make10.CellSpec     ( spec
 import Prelude
 
 import Test.Hspec
-import Test.QuickCheck
-
-import Game.Make10 hiding       ( Operator
+import Test.QuickCheck hiding   ( function
                                 )
+
+import Game.Make10
 
 import Game.Make10.Arbitrary.Operator
 -- ============================================================================
