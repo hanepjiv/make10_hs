@@ -146,4 +146,4 @@ cabal.project.local~
 .HTF/
 .ghc.environment.*
 
-
+make10.cabal
