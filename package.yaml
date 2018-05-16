@@ -1,0 +1,98 @@
+name: make10
+version: '0.1.0.0'
+synopsis: make10, 10puzzle
+description: puzzle game
+category: Game
+author: hanepjiv
+maintainer: hanepjiv@gmail.com
+license: MIT
+github: hanepjiv/make10_hs
+default-extensions:
+- DeriveDataTypeable
+- ScopedTypeVariables
+- OverloadedStrings
+- GADTs
+ghc-options:
+- -Wall
+- -Werror
+- -Wredundant-constraints
+- -fdefer-type-errors
+- -fhelpful-errors
+- -fwarn-deprecated-flags
+- -fwarn-duplicate-exports
+- -fwarn-hi-shadowing
+- -fwarn-identities
+- -fwarn-implicit-prelude
+- -fwarn-incomplete-patterns
+- -fwarn-incomplete-uni-patterns
+- -fwarn-incomplete-record-updates
+- -fwarn-missing-fields
+- -fwarn-missing-methods
+- -fwarn-missing-signatures
+- -fwarn-missing-local-signatures
+- -fwarn-monomorphism-restriction
+- -fwarn-name-shadowing
+- -fwarn-orphans
+- -fwarn-overlapping-patterns
+- -fwarn-tabs
+- -fwarn-type-defaults
+- -fwarn-unrecognised-pragmas
+- -fwarn-unused-binds
+- -fwarn-unused-imports
+- -fwarn-unused-matches
+- -fwarn-unused-do-bind
+- -fwarn-wrong-do-bind
+- -fwarn-warnings-deprecations
+- -fwarn-typed-holes
+library:
+  source-dirs: src
+  default-extensions:
+  - Safe
+  ghc-options:
+  - -fwarn-unsafe
+  exposed-modules:
+  - Game.Make10
+  - Game.Make10.Cell
+  - Game.Make10.Expand
+  - Game.Make10.Operator
+  dependencies:
+  - base >=4.9.1.0 && <5
+  - containers
+executables:
+  make10:
+    main: Main.hs
+    source-dirs: example/make10
+    default-extensions:
+    - Safe
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -fwarn-unsafe
+    dependencies:
+    - base
+    - make10
+tests:
+  make10-spec:
+    main: Main.hs
+    source-dirs: test/spec
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - base
+    - QuickCheck
+    - hspec
+    - make10
+  make10-doctests:
+    main: doctests.hs
+    source-dirs: test/doctests
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - base
+    - QuickCheck
+    - doctest
