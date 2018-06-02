@@ -1,5 +1,4 @@
 {-# LANGUAGE      ScopedTypeVariables
-                , OverloadedStrings
                 , GADTs
                 #-}
 -- ============================================================================
