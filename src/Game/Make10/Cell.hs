@@ -27,10 +27,6 @@ module Game.Make10.Cell         ( Cell(..)
 -- ----------------------------------------------------------------------------
 import Prelude
 
-import Control.Applicative      ( (<$>)
-                                , (<*>)
-                                )
-
 import qualified Game.Make10.Operator as Op
 import qualified Game.Make10.Expand as Exp
 -- ============================================================================

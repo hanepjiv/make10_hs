@@ -20,9 +20,6 @@ module Game.Make10.Arbitrary.Operator   ( Operator(..)
 -- ----------------------------------------------------------------------------
 import Prelude
 
-import Control.Applicative              ( (<$>)
-                                        )
-
 import Test.QuickCheck
 
 import qualified Game.Make10
