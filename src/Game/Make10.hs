@@ -62,11 +62,11 @@ make_M_4_Triple ns os =
            (a0 -> a0 -> a0 -> a0 -> a1 -> a1 -> a1 -> t)
                -> [a0] -> [a1] -> [Integer] -> t
     gen make_ n_ o_ i_ = make_
-                         (n_ !! fromInteger (head i_))
+                         (n_ !! fromInteger (i_ !! 0))
                          (n_ !! fromInteger (i_ !! 1))
                          (n_ !! fromInteger (i_ !! 2))
                          (n_ !! fromInteger (i_ !! 3))
-                         (head o_)
+                         (o_ !! 0)
                          (o_ !! 1)
                          (o_ !! 2)
     -- ------------------------------------------------------------------------

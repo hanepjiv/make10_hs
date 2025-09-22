@@ -95,6 +95,6 @@ main = flip runKleisli () $
     parseargs   []      =  Right (10 :: Rational)
     parseargs   [_]     =  Right (10 :: Rational)
     parseargs   (x:xs)
-      | x == "-m"       =  readEither $ head xs
+      | x == "-m"       =  readEither $ xs !! 0
       | otherwise       =  parseargs xs
 -- -}

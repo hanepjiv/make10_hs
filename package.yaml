@@ -20,7 +20,6 @@ ghc-options:
 - -fhelpful-errors
 - -fwarn-deprecated-flags
 - -fwarn-duplicate-exports
-- -fwarn-hi-shadowing
 - -fwarn-identities
 - -fwarn-implicit-prelude
 - -fwarn-incomplete-patterns
@@ -56,7 +55,7 @@ library:
   - Game.Make10.Expand
   - Game.Make10.Operator
   dependencies:
-  - base >=4.10.1.0 && <5
+  - base
   - containers
 executables:
   make10:
