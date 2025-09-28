@@ -1,0 +1,16 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "make10:lib"
+
+    - path: "./example/make10/Main.hs"
+      component: "make10:exe:make10"
+
+    - path: "./example/make10/Paths_make10.hs"
+      component: "make10:exe:make10"
+
+    - path: "./test/doctests"
+      component: "make10:test:make10-doctests"
+
+    - path: "./test/spec"
+      component: "make10:test:make10-spec"
